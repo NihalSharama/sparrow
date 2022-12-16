@@ -1,6 +1,6 @@
-import 'package:client/pages/chatRoom.dart';
-import 'package:client/pages/landing.dart';
-import 'package:client/pages/auth.dart';
+import 'package:sparrow/pages/chatRoom.dart';
+import 'package:sparrow/pages/landing.dart';
+import 'package:sparrow/pages/auth.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> genarateRoute(RouteSettings routeSettings) {

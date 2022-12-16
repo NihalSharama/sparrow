@@ -1,9 +1,11 @@
-import 'package:client/common/global_variables.dart';
-import 'package:client/components/customButton.dart';
-import 'package:client/components/customITextField.dart';
-import 'package:client/controllers/authController.dart';
-import 'package:client/pages/chats.dart';
+import 'package:sparrow/common/global_variables.dart';
+import 'package:sparrow/components/customButton.dart';
+import 'package:sparrow/components/customITextField.dart';
+import 'package:sparrow/controllers/authController.dart';
+import 'package:sparrow/pages/chats.dart';
+import 'package:sparrow/pages/landing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';

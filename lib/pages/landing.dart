@@ -1,8 +1,8 @@
-import 'package:client/pages/auth.dart';
-import 'package:client/pages/calls.dart';
-import 'package:client/pages/chats.dart';
-import 'package:client/pages/status.dart';
-import 'package:client/utils/cache-manager.dart';
+import 'package:sparrow/pages/auth.dart';
+import 'package:sparrow/pages/calls.dart';
+import 'package:sparrow/pages/chats.dart';
+import 'package:sparrow/pages/status.dart';
+import 'package:sparrow/utils/cache-manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter_contacts/flutter_contacts.dart';

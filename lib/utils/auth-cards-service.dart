@@ -1,5 +1,5 @@
-import 'package:client/pages/auth.dart';
-import 'package:client/utils/cache-manager.dart';
+import 'package:sparrow/pages/auth.dart';
+import 'package:sparrow/utils/cache-manager.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 

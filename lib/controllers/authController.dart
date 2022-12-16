@@ -1,4 +1,4 @@
-import 'package:client/services/auth-services.dart';
+import 'package:sparrow/services/auth-services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 

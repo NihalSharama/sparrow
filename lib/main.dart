@@ -1,7 +1,7 @@
 // @dart=2.9
-import 'package:client/controllers/userController.dart';
-import 'package:client/pages/landing.dart';
-import 'package:client/router.dart';
+import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/pages/landing.dart';
+import 'package:sparrow/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';

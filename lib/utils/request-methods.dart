@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:client/utils/auth-cards-service.dart';
-import 'package:client/utils/cache-manager.dart';
-import 'package:client/utils/error-handlers.dart';
+import 'package:sparrow/utils/auth-cards-service.dart';
+import 'package:sparrow/utils/cache-manager.dart';
+import 'package:sparrow/utils/error-handlers.dart';
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;

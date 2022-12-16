@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:client/utils/cache-manager.dart';
-import 'package:client/utils/error-handlers.dart';
-import 'package:client/utils/request-methods.dart';
+import 'package:sparrow/utils/cache-manager.dart';
+import 'package:sparrow/utils/error-handlers.dart';
+import 'package:sparrow/utils/request-methods.dart';
 import 'package:http/http.dart';
 
 class AuthServices {

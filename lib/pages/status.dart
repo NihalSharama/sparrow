@@ -1,4 +1,4 @@
-import 'package:client/pages/story_page_view.dart';
+import 'package:sparrow/pages/story_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';

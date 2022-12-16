@@ -1,5 +1,5 @@
-import 'package:client/components/call_widget.dart';
-import 'package:client/controllers/callsController.dart';
+import 'package:sparrow/components/call_widget.dart';
+import 'package:sparrow/controllers/callsController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';

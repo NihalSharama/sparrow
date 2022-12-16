@@ -1,6 +1,6 @@
-import 'package:client/components/chat.dart';
-import 'package:client/controllers/chatsController.dart';
-import 'package:client/pages/landing.dart';
+import 'package:sparrow/components/chat.dart';
+import 'package:sparrow/controllers/chatsController.dart';
+import 'package:sparrow/pages/landing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
