@@ -1,4 +1,5 @@
 import 'package:get/state_manager.dart';
+import 'package:sparrow/services/chat-services.dart';
 
 var featchedChats = [
   {
@@ -76,6 +77,54 @@ var featchedChatRoomDetails = {
       "from": "you",
       "time": DateTime.now()
     },
+    {
+      "text": "It’s morning in Tokyo",
+      "msgStatus": "seen",
+      "from": "you",
+      "time": DateTime.now()
+    },
+    {
+      "text": "What is the most popular meal in Japan?",
+      "msgStatus": "seen",
+      "from": "Nihal Sharma",
+      "time": DateTime.now()
+    },
+    {
+      "text": "Do you like it?",
+      "msgStatus": "seen",
+      "from": "Nihal Sharma",
+      "time": DateTime.now()
+    },
+    {
+      "text": "I think top two are:",
+      "msgStatus": "seen",
+      "from": "you",
+      "time": DateTime.now()
+    },
+    {
+      "text": "It’s morning in Tokyo",
+      "msgStatus": "seen",
+      "from": "you",
+      "time": DateTime.now()
+    },
+    {
+      "text": "What is the most popular meal in Japan?",
+      "msgStatus": "seen",
+      "from": "Nihal Sharma",
+      "time": DateTime.now()
+    },
+    {
+      "text": "Do you like it?",
+      "msgStatus": "seen",
+      "from": "Nihal Sharma",
+      "time": DateTime.now()
+    },
+    {
+      "text": "I think top two are:",
+      "msgStatus": "seen",
+      "from": "you",
+      "time": DateTime.now()
+    },
   ]
 };
 
@@ -84,6 +133,9 @@ class ChatsController extends GetxController {
   var chatRoomDetails = {}.obs;
 
   getChats() async {
+    // await ChatServices().featchChats();
+    // await ChatServices().featchChatDetails('1');
+
     chats.value = featchedChats;
   }
 

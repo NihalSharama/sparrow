@@ -14,7 +14,7 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
   } else if (routeSettings.name!.contains(ChatRoomScreen.routeName)) {
     return MaterialPageRoute(
       settings: routeSettings,
-      builder: (_) => ChatRoomScreen(id: path[2]),
+      builder: (_) => ChatRoomScreen(id: path[1]),
     );
   }
 

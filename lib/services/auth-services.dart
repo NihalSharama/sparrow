@@ -55,7 +55,6 @@ class AuthServices {
     final isNoError = toasterHandler(mapRes);
 
     CacheStorage().saveAuthCards(mapRes['data']);
-    print(await CacheStorage().getAuthCards());
 
     return isNoError;
   }

@@ -19,12 +19,6 @@ var featchedCalls = [
     "call": "Missed",
     "callStatus": "missed",
   },
-  {
-    "avatar": "assets/images/chat_avatar.png",
-    "name": "Shweta Choduray",
-    "call": "Incoming",
-    "callStatus": "Incoming",
-  }
 ];
 
 class CallsController extends GetxController {

@@ -1,5 +1,6 @@
 import 'package:sparrow/components/chat.dart';
 import 'package:sparrow/controllers/chatsController.dart';
+import 'package:sparrow/pages/chatRoom.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,11 +33,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: (() {
-                      Navigator.pushReplacementNamed(
-                          context,
-                          LandingScreen.routeName +
-                              ChatsScreen.routeName +
-                              chatsController.chats[index]["id"].toString());
+                      Navigator.pushReplacementNamed(context,
+                          '${ChatRoomScreen.routeName}${chatsController.chats[index]["id"]}');
                     }),
                     child: ChatCardComponent(
                         avatar: chatsController.chats[index]["avatar"],

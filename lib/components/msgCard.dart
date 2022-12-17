@@ -20,7 +20,7 @@ class MsgCardComponent extends StatelessWidget {
     return Card(
       color: (from == 'you'
           ? const Color.fromRGBO(220, 247, 197, 1)
-          : const Color.fromARGB(255, 221, 221, 221)),
+          : const Color.fromARGB(255, 234, 234, 234)),
       shape: RoundedRectangleBorder(
           borderRadius: (from == 'you'
               ? const BorderRadius.only(

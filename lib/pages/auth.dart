@@ -235,8 +235,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                         .onGetLoginOtp(AuthFormKey);
                                   }
 
-                                  print(isNoError);
-
                                   if (isNoError) {
                                     // ignore: use_build_context_synchronously
                                     Navigator.pushReplacementNamed(context,
