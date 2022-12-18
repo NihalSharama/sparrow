@@ -33,12 +33,46 @@ class MsgCardComponent extends StatelessWidget {
                   topRight: Radius.circular(10),
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10)))),
-      elevation: 5,
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Text(
-          text,
-          style: const TextStyle(color: (Color.fromARGB(255, 43, 43, 43))),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              text,
+              style: const TextStyle(color: (Color.fromARGB(255, 43, 43, 43))),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              time,
+              style: const TextStyle(
+                  color: (Color.fromARGB(255, 43, 43, 43)), fontSize: 10),
+            ),
+            if (from == 'you') ...{
+              const SizedBox(width: 8),
+              if (msgStatus == 'sent') ...{
+                const Icon(
+                  Icons.done,
+                  color: Colors.grey,
+                  size: 14,
+                )
+              } else if (msgStatus == 'received') ...{
+                const Icon(
+                  Icons.done_all,
+                  color: Colors.grey,
+                  size: 14,
+                )
+              } else ...{
+                const Icon(
+                  Icons.done_all,
+                  color: Colors.blue,
+                  size: 14,
+                )
+              },
+            }
+          ],
         ),
       ),
     );

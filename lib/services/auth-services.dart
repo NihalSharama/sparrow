@@ -50,12 +50,27 @@ class AuthServices {
       toasterUnknownFailure();
       return false;
     }
-
     final mapRes = json.decode(response.body);
+
     final isNoError = toasterHandler(mapRes);
 
     CacheStorage().saveAuthCards(mapRes['data']);
 
     return isNoError;
+  }
+
+  featchAuthCardsFromRefresh() async {
+    try {
+      final authCard = await CacheStorage().getAuthCards();
+      final refresh = authCard['referesh'];
+
+      Response response = await RequestMethods.postMethod(
+          '/token/refresh/', {'refresh': refresh}, false);
+
+      final mapRes = json.decode(response.body);
+      return mapRes;
+    } catch (e) {
+      toasterUnknownFailure();
+    }
   }
 }

@@ -27,4 +27,18 @@ class ChatServices {
     print(mapRes['data']);
     return;
   }
+
+  sendChatMsg(String mobile, String msg) async {
+    final response = await RequestMethods.postMethod(
+        '/chat/conv/', {'mobile': mobile, 'msg': ''}, true);
+    if (response.statusCode != 200) {
+      toasterUnknownFailure();
+      return;
+    }
+
+    final mapRes = json.decode(response.body);
+
+    print(mapRes['data']);
+    return;
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:sparrow/services/auth-services.dart';
 import 'package:sparrow/utils/auth-cards-service.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
@@ -29,7 +30,7 @@ class RequestMethods {
       bool wasExpired = await featchTokenIfExpired(mapRes);
 
       if (wasExpired) {
-        final newAuthCards = await featchAuthCards();
+        final newAuthCards = await AuthServices().featchAuthCardsFromRefresh();
         final newToken = newAuthCards['token'];
         CacheStorage().saveAuthCards(newAuthCards);
 
@@ -70,7 +71,7 @@ class RequestMethods {
       bool wasExpired = await featchTokenIfExpired(mapRes);
 
       if (wasExpired) {
-        final newAuthCards = await featchAuthCards();
+        final newAuthCards = await AuthServices().featchAuthCardsFromRefresh();
         final newToken = newAuthCards['token'];
         CacheStorage().saveAuthCards(newAuthCards);
 

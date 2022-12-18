@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:sparrow/services/chat-services.dart';
 
@@ -34,6 +35,7 @@ var featchedChats = [
 var featchedChatRoomDetails = {
   "roomAvatar": "assets/images/chat_avatar.png",
   "roomName": "Nihal Sharma",
+  "otherMobile": "1111111111",
   "messages": [
     {
       "text": "Good Morning!",
@@ -121,7 +123,7 @@ var featchedChatRoomDetails = {
     },
     {
       "text": "I think top two are:",
-      "msgStatus": "seen",
+      "msgStatus": "sent",
       "from": "you",
       "time": DateTime.now()
     },
@@ -131,6 +133,7 @@ var featchedChatRoomDetails = {
 class ChatsController extends GetxController {
   var chats = [].obs;
   var chatRoomDetails = {}.obs;
+  var inputMsg = TextEditingController().obs;
 
   getChats() async {
     // await ChatServices().featchChats();
@@ -141,6 +144,11 @@ class ChatsController extends GetxController {
 
   getChatRoomDetails(String roomId) async {
     chatRoomDetails.value = featchedChatRoomDetails;
+  }
+
+  onSendChatMsg() async {
+    await ChatServices()
+        .sendChatMsg(chatRoomDetails.value['otherMobile'], inputMsg.value.text);
   }
 
   @override
