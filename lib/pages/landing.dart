@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
 import 'package:sparrow/pages/chats.dart';
 import 'package:sparrow/pages/status.dart';
 import 'package:sparrow/utils/cache-manager.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-// import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_svg/svg.dart';
 
 class LandingScreen extends StatefulWidget {
   static const routeName = '/landing/';
@@ -23,13 +23,14 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       // CacheStorage().removeAuthCards();
+
       // List<Contact> contacts = await FlutterContacts.getContacts(
       //     withProperties: true, withPhoto: true);
 
       // print(contacts);
       final authCards = await CacheStorage().getAuthCards();
 
-      if (authCards == null) {
+      if (authCards == null || authCards.isEmpty) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AuthScreen.routeName);
       }
@@ -91,14 +92,18 @@ class _LandingScreenState extends State<LandingScreen> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, '/landing/${StatusScreen.routeName}');
-                    },
-                    icon: Image.asset(
-                      'assets/icons/status.png',
-                    )),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, '/landing/${StatusScreen.routeName}');
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/status.svg",
+                    color: (widget.subRoute == 'chats'
+                        ? Colors.blue
+                        : Colors.grey),
+                  ),
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

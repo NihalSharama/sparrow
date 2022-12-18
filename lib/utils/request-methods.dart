@@ -14,7 +14,7 @@ class RequestMethods {
 
   static Future getMethod(String path, bool isAuth) async {
     final authCards = await CacheStorage().getAuthCards();
-    var token = authCards!['token'];
+    var token = authCards?['token'];
     var response =
         await client.get(Uri.parse('${dotenv.env['SERVER_URI']}$path'),
             headers: (isAuth
@@ -25,7 +25,7 @@ class RequestMethods {
                 : <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   }));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 401) {
       Map mapRes = json.decode(response.body);
       bool wasExpired = await featchTokenIfExpired(mapRes);
 
@@ -66,7 +66,7 @@ class RequestMethods {
             }),
       body: jsonEncode(data),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 401) {
       Map mapRes = json.decode(response.body);
       bool wasExpired = await featchTokenIfExpired(mapRes);
 

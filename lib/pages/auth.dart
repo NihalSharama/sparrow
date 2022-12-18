@@ -1,17 +1,19 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/customButton.dart';
 import 'package:sparrow/components/customITextField.dart';
 import 'package:sparrow/controllers/authController.dart';
 import 'package:sparrow/pages/chats.dart';
-import 'package:sparrow/pages/landing.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
+
+import 'otp_field.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+  const AuthScreen({
+    super.key,
+  });
   static const routeName = '/auth';
 
   @override
@@ -21,6 +23,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final authController = Get.put(AuthController());
   final AuthFormKey = GlobalKey<FormState>();
+  final otpFormKey = GlobalKey<FormState>();
   bool isRegister = false;
 
   @override
@@ -43,212 +46,240 @@ class _AuthScreenState extends State<AuthScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text("Hey! 👋",
+                  if (authController.showOtp.value) ...{
+                    const SizedBox(height: 140),
+                    const Text(
+                      'OTP VERIFICATION',
                       style: TextStyle(
-                          fontSize: 22,
-                          color: Color.fromARGB(255, 35, 35, 35),
-                          fontWeight: FontWeight.w600)),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                        "Please confirm your country code and enter your phone number",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Color.fromARGB(255, 87, 87, 87))),
-                  ),
-                  const SizedBox(
-                    height: 17,
-                  ),
-                  Form(
-                    key: AuthFormKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                          color: AppColors.mainColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Divider(
-                          color: Color.fromARGB(255, 213, 213, 213),
+                        const Text(
+                          'Enter The OTP Sent To - ',
+                          style: TextStyle(
+                              color: AppColors.titleColorExtraLight,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("India",
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.w600)),
-                            SvgPicture.asset("assets/icons/Sharp.svg")
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Divider(
-                          color: Color.fromARGB(255, 213, 213, 213),
-                        ),
-                        IntrinsicHeight(
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text("+91",
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey)),
-                              const VerticalDivider(
-                                color: Color.fromARGB(255, 213, 213, 213),
-                                thickness: 1,
-                                width: 20,
-                                indent: 15,
-                                endIndent: 15,
-                              ),
-                              Expanded(
-                                  child: CustomTextField(
-                                      controller:
-                                          authController.phoneController,
-                                      validator: (val) {
-                                        if (val == null || val.isEmpty) {
-                                          return 'Enter your Moblie No.';
-                                        } else if (val.length > 10 ||
-                                            val.length < 10) {
-                                          return 'Length should have 10 digits';
-                                        }
-                                        return null;
-                                      },
-                                      hintText: 'Mobile number',
-                                      keyboardType: TextInputType.phone))
-                            ],
+                        GestureDetector(
+                          child: Text(
+                            authController.phoneController.value.text,
+                            style: const TextStyle(
+                                color: AppColors.mainColor,
+                                decoration: TextDecoration.underline,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400),
                           ),
                         ),
-                        if (isRegister == true) ...{
-                          CustomTextField(
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    Align(
+                      alignment: Alignment.center,
+                      child: OtpFieldWidget(
+                        otp_form_key: otpFormKey,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Haven't Recieved Code ? ",
+                          style: TextStyle(
+                              color: AppColors.titleColorExtraLight,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (isRegister) {
+                              await authController.onGetSignUpOtp(null);
+                            } else if (!isRegister) {
+                              await authController.onGetLoginOtp(null);
+                            }
+                          },
+                          child: const Text(
+                            "Re-Send",
+                            style: TextStyle(
+                                color: AppColors.mainColor,
+                                decoration: TextDecoration.underline,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text('OTP Is: ${authController.otp.value}'),
+                    // ignore: equal_elements_in_set
+                    const SizedBox(height: 40),
+                  } else ...{
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text("Hey! 👋",
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Color.fromARGB(255, 35, 35, 35),
+                            fontWeight: FontWeight.w600)),
+                    // ignore: equal_elements_in_set
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                          "Please confirm your country code and enter your phone number",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromARGB(255, 87, 87, 87))),
+                    ),
+                    const SizedBox(
+                      height: 17,
+                    ),
+                    Form(
+                      key: AuthFormKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Divider(
+                            color: Color.fromARGB(255, 213, 213, 213),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("India",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600)),
+                              SvgPicture.asset("assets/icons/Sharp.svg")
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Divider(
+                            color: Color.fromARGB(255, 213, 213, 213),
+                          ),
+                          IntrinsicHeight(
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Text("+91",
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey)),
+                                const VerticalDivider(
+                                  color: Color.fromARGB(255, 213, 213, 213),
+                                  thickness: 1,
+                                  width: 20,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Expanded(
+                                    child: CustomTextField(
+                                        controller:
+                                            authController.phoneController,
+                                        validator: (val) {
+                                          if (val == null || val.isEmpty) {
+                                            return 'Enter your Moblie No.';
+                                          } else if (val.length > 10 ||
+                                              val.length < 10) {
+                                            return 'Length should have 10 digits';
+                                          }
+                                          return null;
+                                        },
+                                        hintText: 'Mobile number',
+                                        keyboardType: TextInputType.phone))
+                              ],
+                            ),
+                          ),
+                          if (isRegister == true) ...{
+                            CustomTextField(
                               controller: authController.firstNameController,
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
-                                  return 'Enter your first name';
-                                } else if (val.length > 10) {
-                                  return 'Length Too Long';
+                                  return 'Enter Your First Name';
                                 }
                                 return null;
                               },
-                              hintText: 'First Name',
-                              keyboardType: TextInputType.text),
-                          const SizedBox(height: 5),
-                          CustomTextField(
+                              hintText: "First Name",
+                              keyboardType: TextInputType.name,
+                            ),
+                            CustomTextField(
                               controller: authController.lastNameController,
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
-                                  return 'Enter your Moblie No.';
-                                } else if (val.length > 10) {
-                                  return 'Length Too Long';
+                                  return 'Enter Your Last Name';
                                 }
                                 return null;
                               },
-                              hintText: 'Last Name',
-                              keyboardType: TextInputType.text),
-                        },
-                        if (authController.showOtp.value) ...{
-                          CustomTextField(
-                              controller: authController.otpController,
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return 'Enter OTP Sent To You';
-                                } else if (val.length > 5 || val.length < 5) {
-                                  return 'OTP length Must be 5';
-                                }
-                                return null;
-                              },
-                              hintText: 'Enter OTP To Verify',
-                              keyboardType: TextInputType.number),
-                        },
-                        const Divider(
-                          color: Color.fromARGB(255, 213, 213, 213),
-                        ),
-                        GestureDetector(
-                          onTap: (() {
-                            setState(() {
-                              isRegister = !isRegister;
-                            });
-                          }),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              (isRegister
-                                  ? 'Already have account? Login'
-                                  : 'Dont have account? Register'),
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.blue,
-                              ),
-                            ),
+                              hintText: "Last Name",
+                              keyboardType: TextInputType.name,
+                            )
+                          },
+                          const Divider(
+                            color: Color.fromARGB(255, 213, 213, 213),
                           ),
-                        ),
-                        if (authController.showOtp.value) ...{
                           GestureDetector(
-                            onTap: () async {
-                              if (isRegister) {
-                                await authController
-                                    .onGetSignUpOtp(AuthFormKey);
-                              } else if (!isRegister) {
-                                await authController.onGetLoginOtp(AuthFormKey);
-                              }
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 5.0),
+                            onTap: (() {
+                              setState(() {
+                                isRegister = !isRegister;
+                              });
+                            }),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                'Resend OTP?',
-                                style: TextStyle(
-                                  fontSize: 13,
+                                (isRegister
+                                    ? 'Already have account? Login'
+                                    : 'Dont have account? Register'),
+                                style: const TextStyle(
+                                  fontSize: 15,
                                   color: Colors.blue,
                                 ),
                               ),
                             ),
                           ),
-                        },
-                        Padding(
-                          padding: const EdgeInsets.only(top: 50.0),
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: CustomButton(
-                                onPressed: () async {
-                                  var isNoError = false;
-                                  if (authController.showOtp.value) {
-                                    isNoError = await authController
-                                        .onVerifyOtp(AuthFormKey);
-                                  } else if (isRegister) {
-                                    await authController
-                                        .onGetSignUpOtp(AuthFormKey);
-                                  } else if (!isRegister) {
-                                    await authController
-                                        .onGetLoginOtp(AuthFormKey);
-                                  }
-
-                                  if (isNoError) {
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.pushReplacementNamed(context,
-                                        '/landing/${ChatsScreen.routeName}');
-                                  }
-                                },
-                                text: (authController.showOtp.value
-                                    ? 'VERIFY OTP'
-                                    : 'SEND OTP'),
-                                width: 100,
-                                height: 50),
-                          ),
-                        )
-                      ],
+                        ],
+                      ),
+                    )
+                  },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: CustomButton(
+                          onPressed: () async {
+                            if (authController.showOtp.value) {
+                              await authController.onVerifyOtp(
+                                  otpFormKey, context);
+                            } else if (isRegister) {
+                              await authController.onGetSignUpOtp(AuthFormKey);
+                            } else if (!isRegister) {
+                              await authController.onGetLoginOtp(AuthFormKey);
+                            }
+                          },
+                          text: (authController.showOtp.value
+                              ? 'VERIFY OTP'
+                              : 'SEND OTP'),
+                          width: 100,
+                          height: 50),
                     ),
                   )
                 ],

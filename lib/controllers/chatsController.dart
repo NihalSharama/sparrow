@@ -136,7 +136,7 @@ class ChatsController extends GetxController {
   var inputMsg = TextEditingController().obs;
 
   getChats() async {
-    // await ChatServices().featchChats();
+    // var featchedChatsApi = await ChatServices().featchChats();
     // await ChatServices().featchChatDetails('1');
 
     chats.value = featchedChats;

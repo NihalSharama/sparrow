@@ -10,10 +10,12 @@ class ChatServices {
       toasterUnknownFailure();
     }
 
+    print(response.body);
+
     final mapRes = json.decode(response.body);
 
-    print(mapRes['data']);
-    // return mapRes['data'];
+    print(mapRes['data']['data']);
+    return mapRes['data']['data'];
   }
 
   featchChatDetails(String id) async {
@@ -24,7 +26,7 @@ class ChatServices {
 
     final mapRes = json.decode(response.body);
 
-    print(mapRes['data']);
+    print(mapRes['data']['data']);
     return;
   }
 

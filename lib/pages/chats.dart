@@ -38,11 +38,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
                     }),
                     child: ChatCardComponent(
                         avatar: chatsController.chats[index]["avatar"],
-                        name: chatsController.chats[index]["name"],
-                        lastMsg: chatsController.chats[index]["lastMsg"],
+                        name: chatsController.chats[index]["conv_name"],
+                        lastMsg: chatsController.chats[index]["last_message"]
+                            ["message"],
                         lastMsgDate: chatsController.chats[index]
-                            ["lastMsgDate"],
-                        msgStatus: chatsController.chats[index]["msgStatus"]),
+                            ["last_message"]["timestamp"],
+                        msgStatus: chatsController.chats[index]["last_message"]
+                            ["status"]),
                   );
                 },
               );
