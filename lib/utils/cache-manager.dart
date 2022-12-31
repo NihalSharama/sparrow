@@ -21,4 +21,31 @@ class CacheStorage {
   removeAuthCards() async {
     await db.collection('auth-cards').doc('auth-cards').delete();
   }
+
+  saveChatConversations(conversations) {
+    // auth cards contain token and refresh token
+    db
+        .collection('chat-conversations')
+        .doc('chat-conversations')
+        .set({'conversations': conversations});
+  }
+
+  getChatConversations() async {
+    final authCards = await db
+        .collection('chat-conversations')
+        .doc('chat-conversations')
+        .get();
+
+    if (authCards == null) {
+      return;
+    }
+    return authCards;
+  }
+
+  removeChatConversations() async {
+    await db
+        .collection('chat-conversations')
+        .doc('chat-conversations')
+        .delete();
+  }
 }

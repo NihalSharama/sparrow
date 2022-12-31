@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:sparrow/services/chat-services.dart';
+import 'package:sparrow/utils/cache-manager.dart';
+import 'package:sparrow/utils/error-handlers.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 var featchedChats = [
   {
@@ -134,21 +140,63 @@ class ChatsController extends GetxController {
   var chats = [].obs;
   var chatRoomDetails = {}.obs;
   var inputMsg = TextEditingController().obs;
+  // ignore: prefer_typing_uninitialized_variables
+  late IOWebSocketChannel chatChannel;
+  late IOWebSocketChannel callChannel;
 
   getChats() async {
-    // var featchedChatsApi = await ChatServices().featchChats();
-    // await ChatServices().featchChatDetails('1');
+    try {
+      var featchedChatsApi = await ChatServices().featchChats();
+      // await ChatServices().featchChatDetails('1');
 
-    chats.value = featchedChats;
+      chats.value = featchedChatsApi;
+    } catch (e) {
+      return;
+    }
   }
 
   getChatRoomDetails(String roomId) async {
-    chatRoomDetails.value = featchedChatRoomDetails;
+    var featchedRoomDetailsApi = await ChatServices().featchChatDetails(roomId);
+    chatRoomDetails.value = featchedRoomDetailsApi;
+
+    chatChannel.stream.listen((event) {
+      print(event);
+      chatRoomDetails.update('messages',
+          (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
+    });
   }
 
   onSendChatMsg() async {
-    await ChatServices()
-        .sendChatMsg(chatRoomDetails.value['otherMobile'], inputMsg.value.text);
+    try {
+      final msgSentRes = await ChatServices().sendChatMsg(
+          chatRoomDetails.value['receiver_info']['mobile'].toString(),
+          inputMsg.value.text);
+
+      if (msgSentRes['status_code'] != 200) {
+        toasterFailureMsg('Failed To Send Message');
+        return;
+      }
+
+      var msgObj = {
+        'receiver_mobile':
+            chatRoomDetails.value['receiver_info']['mobile'].toString(),
+        'sender': msgSentRes['data']['sender'],
+        'message': inputMsg.value.text,
+        'created_at': msgSentRes['data']['created_at'],
+        'status': msgSentRes['data']['status'],
+        'isStarred': msgSentRes['data']['isStarred']
+      };
+
+      chatChannel.sink.add(json.encode(msgObj));
+
+      chatRoomDetails.update(
+          'messages', (value) => chatRoomDetails.value['messages'] + [msgObj]);
+
+      inputMsg.value.text = '';
+    } catch (e) {
+      toasterUnknownFailure();
+      return;
+    }
   }
 
   @override

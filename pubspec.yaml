@@ -44,6 +44,11 @@ dependencies:
   intl: ^0.17.0
   jwt_decoder: ^2.0.1
   flutter_toastr: ^1.0.3
+  web_socket_channel: ^2.2.0
+  flutter_webrtc: ^0.9.18
+  uuid: ^3.0.7
+  flutter_webrtc_wrapper: ^1.0.2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

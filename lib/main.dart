@@ -1,6 +1,7 @@
 // @dart=2.9
 import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/landing.dart';
+import 'package:sparrow/pages/search.dart';
 import 'package:sparrow/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,10 +27,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "Let's Talk ",
+        title: "Let's Talk",
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
         onGenerateRoute: (settings) =>
             genarateRoute(settings), // auto genarating routes
-        home: (const LandingScreen(subRoute: 'chats'))); //
+        home: const LandingScreen(
+          subRoute: 'chats',
+        )); //
   }
 }

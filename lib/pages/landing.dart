@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
 import 'package:sparrow/pages/chats.dart';
 import 'package:sparrow/pages/status.dart';
+import 'package:sparrow/services/websockets.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -19,9 +23,13 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  final webSockets = WebSockets();
+  final userController = Get.put(UserController());
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
+      await webSockets.initWebSocketConnection();
       // CacheStorage().removeAuthCards();
 
       // List<Contact> contacts = await FlutterContacts.getContacts(
@@ -30,7 +38,18 @@ class _LandingScreenState extends State<LandingScreen> {
       // print(contacts);
       final authCards = await CacheStorage().getAuthCards();
 
-      if (authCards == null || authCards.isEmpty) {
+      bool invalidCreds;
+      try {
+        invalidCreds = (authCards['refresh'].toString() ==
+                '[This field may not be null.]' ||
+            authCards['token'].toString() == '[This field may not be null.]');
+        userController.userId.value =
+            JwtDecoder.decode(authCards['token'])['user_id'];
+      } catch (_) {
+        invalidCreds = (authCards == null || authCards.isEmpty);
+      }
+
+      if (invalidCreds) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, AuthScreen.routeName);
       }
@@ -92,17 +111,30 @@ class _LandingScreenState extends State<LandingScreen> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/landing/${StatusScreen.routeName}');
-                  },
-                  child: SvgPicture.asset(
-                    "assets/icons/status.svg",
-                    color: (widget.subRoute == 'chats'
-                        ? Colors.blue
-                        : Colors.grey),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        icon: SvgPicture.asset(
+                          "assets/icons/status.svg",
+                          height: 26,
+                          width: 26,
+                          color: (widget.subRoute == 'status'
+                              ? Colors.blue
+                              : Colors.grey),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, '/landing/${StatusScreen.routeName}');
+                        }),
+                    Text('Status',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: (widget.subRoute == 'status'
+                                ? Colors.blue
+                                : Colors.grey)))
+                  ],
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +184,12 @@ class _LandingScreenState extends State<LandingScreen> {
                   ],
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await CacheStorage().removeAuthCards();
+
+                      Navigator.pushReplacementNamed(
+                          context, AuthScreen.routeName);
+                    },
                     icon: const Icon(
                       Icons.more_vert,
                       size: 35,

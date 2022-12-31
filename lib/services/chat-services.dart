@@ -10,29 +10,26 @@ class ChatServices {
       toasterUnknownFailure();
     }
 
-    print(response.body);
-
     final mapRes = json.decode(response.body);
 
-    print(mapRes['data']['data']);
     return mapRes['data']['data'];
   }
 
   featchChatDetails(String id) async {
-    final response = await RequestMethods.getMethod('/chat/conv/$id', true);
+    final response = await RequestMethods.getMethod('/chat/conv/$id/', true);
     if (response.statusCode != 200) {
       toasterUnknownFailure();
     }
 
     final mapRes = json.decode(response.body);
 
-    print(mapRes['data']['data']);
-    return;
+    return mapRes['data'];
   }
 
   sendChatMsg(String mobile, String msg) async {
     final response = await RequestMethods.postMethod(
-        '/chat/conv/', {'mobile': mobile, 'msg': ''}, true);
+        '/chat/chats/', {'mobile': mobile, 'message': msg}, true);
+
     if (response.statusCode != 200) {
       toasterUnknownFailure();
       return;
@@ -40,7 +37,6 @@ class ChatServices {
 
     final mapRes = json.decode(response.body);
 
-    print(mapRes['data']);
-    return;
+    return mapRes;
   }
 }

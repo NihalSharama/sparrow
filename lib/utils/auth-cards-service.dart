@@ -5,7 +5,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 Future<bool> featchTokenIfExpired(Map mapRes) async {
   try {
-    print(mapRes["code"] == "token_not_valid");
     if (mapRes["code"] == "token_not_valid") {
       // check for refresh token expire, if not expired then featch new token
       final authCards = await CacheStorage().getAuthCards();

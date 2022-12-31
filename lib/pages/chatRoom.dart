@@ -1,10 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sparrow/components/msgCard.dart';
 import 'package:sparrow/controllers/chatsController.dart';
+import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/chats.dart';
 import 'package:sparrow/pages/landing.dart';
 
@@ -19,6 +19,8 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final chatController = Get.put(ChatsController());
+  final userController = Get.put(UserController());
+  // final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +52,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               size: 35,
                             ),
                           ),
-                          CircleAvatar(
+                          const CircleAvatar(
                               maxRadius: 20,
                               minRadius: 20,
-                              backgroundImage: AssetImage(chatController
-                                  .chatRoomDetails.value["roomAvatar"])),
+                              backgroundImage:
+                                  AssetImage('assets/images/chat_avatar.png')),
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 chatController
-                                    .chatRoomDetails.value["roomName"],
+                                    .chatRoomDetails.value["conv_name"],
                                 style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -95,92 +97,110 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: chatController
-                            .chatRoomDetails.value['messages'].length,
-                        itemBuilder: (context, index) {
-                          final message = chatController
-                              .chatRoomDetails.value["messages"][index];
+                    Expanded(child: Obx(() {
+                      return Material(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: const Color.fromARGB(255, 246, 246, 246),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: chatController
+                              .chatRoomDetails.value['messages'].length,
+                          itemBuilder: (context, index) {
+                            final message = chatController
+                                .chatRoomDetails.value["messages"][index];
 
-                          return Align(
-                            alignment: (message['from'] == 'you'
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft),
-                            child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: MsgCardComponent(
-                                    text: message['text'],
-                                    time: '11:30',
-                                    msgStatus: message['msgStatus'],
-                                    from: message['from'])),
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 4, right: 4, bottom: 10, top: 5),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(35.0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      offset: Offset(0, 3),
-                                      blurRadius: 5,
-                                      color: Colors.grey)
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 15.0),
-                                      child: TextField(
-                                        controller:
-                                            chatController.inputMsg.value,
-                                        decoration: const InputDecoration(
-                                            hintText: "Type Something...",
-                                            hintStyle: TextStyle(
-                                                color: Colors.blueAccent),
-                                            border: InputBorder.none),
+                            return Align(
+                              alignment: (message['sender'] ==
+                                      userController.userId.value
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft),
+                              child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: MsgCardComponent(
+                                      text: message['message'],
+                                      time:
+                                          DateTime.parse(message['created_at']),
+                                      isStarred: message['isStarred'],
+                                      msgStatus: message['status'],
+                                      from: message['sender'])),
+                            );
+                          },
+                        ),
+                      );
+                    })),
+                    Material(
+                      color: const Color.fromARGB(255, 246, 246, 246),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 4, right: 4, bottom: 10, top: 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 246, 246, 246),
+                                  borderRadius: BorderRadius.circular(35.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        offset: Offset(0, 3),
+                                        blurRadius: 5,
+                                        color: Colors.grey)
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: TextField(
+                                          controller:
+                                              chatController.inputMsg.value,
+                                          decoration: const InputDecoration(
+                                              hintText: "Type Something...",
+                                              hintStyle: TextStyle(
+                                                  color: Colors.blueAccent),
+                                              border: InputBorder.none),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.photo_camera,
-                                        color: Colors.blueAccent),
-                                    onPressed: () {},
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.attach_file,
-                                        color: Colors.blueAccent),
-                                    onPressed: () {},
-                                  )
-                                ],
+                                    IconButton(
+                                      icon: const Icon(Icons.photo_camera,
+                                          color: Colors.blueAccent),
+                                      onPressed: () {},
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.attach_file,
+                                          color: Colors.blueAccent),
+                                      onPressed: () {},
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Container(
-                            padding: const EdgeInsets.all(15.0),
-                            decoration: const BoxDecoration(
-                                color: Colors.blueAccent,
-                                shape: BoxShape.circle),
-                            child: InkWell(
-                              child: (const Icon(Icons.send_sharp,
-                                  color: Colors.white, size: 18)),
-                              onLongPress: () {},
-                            ),
-                          )
-                        ],
+                            const SizedBox(width: 15),
+                            GestureDetector(
+                              onTap: (() {
+                                if (chatController.inputMsg.value.text == '') {
+                                  return;
+                                }
+                                chatController.onSendChatMsg();
+                              }),
+                              child: Container(
+                                padding: const EdgeInsets.all(15.0),
+                                decoration: const BoxDecoration(
+                                    color: Colors.blueAccent,
+                                    shape: BoxShape.circle),
+                                child: const InkWell(
+                                  child: (Icon(Icons.send_sharp,
+                                      color: Colors.white, size: 18)),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],

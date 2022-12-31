@@ -25,26 +25,23 @@ class RequestMethods {
                 : <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   }));
-    if (response.statusCode == 401) {
-      Map mapRes = json.decode(response.body);
-      bool wasExpired = await featchTokenIfExpired(mapRes);
+    Map mapRes = json.decode(response.body);
+    bool wasExpired = await featchTokenIfExpired(mapRes);
 
-      if (wasExpired) {
-        final newAuthCards = await AuthServices().featchAuthCardsFromRefresh();
-        final newToken = newAuthCards['token'];
-        CacheStorage().saveAuthCards(newAuthCards);
+    if (wasExpired) {
+      final newAuthCards = await AuthServices().featchAuthCardsFromRefresh();
+      final newToken = newAuthCards['token'];
+      CacheStorage().saveAuthCards(newAuthCards);
 
-        response =
-            await client.get(Uri.parse('${dotenv.env['SERVER_URI']}$path'),
-                headers: (isAuth
-                    ? <String, String>{
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization': 'Bearer $newToken',
-                      }
-                    : <String, String>{
-                        'Content-Type': 'application/json; charset=UTF-8',
-                      }));
-      }
+      response = await client.get(Uri.parse('${dotenv.env['SERVER_URI']}$path'),
+          headers: (isAuth
+              ? <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Authorization': 'Bearer $newToken',
+                }
+              : <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                }));
     }
 
     return response;
