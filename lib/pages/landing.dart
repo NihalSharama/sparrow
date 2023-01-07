@@ -30,12 +30,7 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       await webSockets.initWebSocketConnection();
-      // CacheStorage().removeAuthCards();
 
-      // List<Contact> contacts = await FlutterContacts.getContacts(
-      //     withProperties: true, withPhoto: true);
-
-      // print(contacts);
       final authCards = await CacheStorage().getAuthCards();
 
       bool invalidCreds;

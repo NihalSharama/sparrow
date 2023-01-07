@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/state_manager.dart';
+import 'package:sdp_transform/sdp_transform.dart';
 import 'package:sparrow/services/chat-services.dart';
-import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
 var featchedChats = [
   {
@@ -141,8 +140,9 @@ class ChatsController extends GetxController {
   var chatRoomDetails = {}.obs;
   var inputMsg = TextEditingController().obs;
   // ignore: prefer_typing_uninitialized_variables
-  late IOWebSocketChannel chatChannel;
-  late IOWebSocketChannel callChannel;
+  late IOWebSocketChannel socketChannel;
+  RTCPeerConnection? peerConnection;
+  var offer = false.obs;
 
   getChats() async {
     try {
@@ -159,7 +159,7 @@ class ChatsController extends GetxController {
     var featchedRoomDetailsApi = await ChatServices().featchChatDetails(roomId);
     chatRoomDetails.value = featchedRoomDetailsApi;
 
-    chatChannel.stream.listen((event) {
+    socketChannel.stream.listen((event) {
       print(event);
       chatRoomDetails.update('messages',
           (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
@@ -187,7 +187,7 @@ class ChatsController extends GetxController {
         'isStarred': msgSentRes['data']['isStarred']
       };
 
-      chatChannel.sink.add(json.encode(msgObj));
+      socketChannel.sink.add(json.encode(msgObj));
 
       chatRoomDetails.update(
           'messages', (value) => chatRoomDetails.value['messages'] + [msgObj]);
@@ -198,6 +198,56 @@ class ChatsController extends GetxController {
       return;
     }
   }
+
+  void createOffer() async {
+    try {
+      RTCSessionDescription description =
+          await peerConnection!.createOffer({'offerToReceiveVideo': 1});
+      var session = parse(description.sdp.toString());
+      print(json.encode(session));
+      offer.value = true;
+
+      peerConnection!.setLocalDescription(description);
+      socketChannel.sink.add(json.encode(session));
+    } catch (_) {
+      toasterUnknownFailure();
+    }
+  }
+
+  void createAnswer() async {
+    RTCSessionDescription description =
+        await peerConnection!.createAnswer({'offerToReceiveVideo': 1});
+
+    var session = parse(description.sdp.toString());
+    print(json.encode(session));
+
+    peerConnection!.setLocalDescription(description);
+    socketChannel.sink.add(json.encode(session));
+  }
+
+  void setRemoteDescription(String sessionString) async {
+    // String jsonString = sdpController.text;
+    dynamic session = await jsonDecode(sessionString);
+
+    String sdp = write(session, null);
+
+    RTCSessionDescription description =
+        RTCSessionDescription(sdp, offer.value ? 'answer' : 'offer');
+    print(description.toMap());
+
+    await peerConnection!.setRemoteDescription(description);
+  }
+
+  void addCandidate(String sessionString) async {
+    // String jsonString = sdpController.text;
+    dynamic session = await jsonDecode(sessionString);
+    print('session : $sessionString');
+    dynamic candidate = RTCIceCandidate(
+        session['candidate'], session['sdpMid'], session['sdpMlineIndex']);
+    await peerConnection!.addCandidate(candidate);
+  }
+
+  sdpExchange(bool isOffer) async {}
 
   @override
   void onInit() {

@@ -1,15 +1,10 @@
-import 'package:sparrow/components/call_widget.dart';
-import 'package:sparrow/controllers/callsController.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:intl/intl.dart';
-
-import '../common/global_variables.dart';
-import '../controllers/chatsController.dart';
+import 'package:sparrow/components/call_widget.dart';
+import 'package:sparrow/controllers/callsController.dart';
 
 class CallsScreen extends StatefulWidget {
   static const routeName = 'calls';

@@ -1,3 +1,4 @@
+import 'package:sparrow/pages/calls/calling_page.dart';
 import 'package:sparrow/pages/chatRoom.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/auth.dart';
@@ -23,6 +24,12 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
       return PageRouteBuilder(
         settings: routeSettings,
         pageBuilder: (_, __, ___) => const AuthScreen(),
+      );
+
+    case CallingPage.routeName:
+      return PageRouteBuilder(
+        settings: routeSettings,
+        pageBuilder: (_, __, ___) => const CallingPage(),
       );
 
     default:

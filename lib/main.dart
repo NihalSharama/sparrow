@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/pages/calls/calling_page.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/search.dart';
 import 'package:sparrow/router.dart';
@@ -31,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
         onGenerateRoute: (settings) =>
             genarateRoute(settings), // auto genarating routes
-        home: const LandingScreen(
+        home: LandingScreen(
           subRoute: 'chats',
         )); //
   }

@@ -32,10 +32,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 itemCount: chatsController.chats.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
-                    onTap: (() {
+                    onTap: () async {
                       Navigator.pushReplacementNamed(context,
                           '${ChatRoomScreen.routeName}${chatsController.chats[index]["id"]}');
-                    }),
+                    },
                     child: ChatCardComponent(
                         avatar: chatsController.chats[index]["avatar"],
                         name: chatsController.chats[index]["conv_name"],
