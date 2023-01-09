@@ -21,11 +21,12 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final chatsController = Get.put(ChatsController());
   final userController = Get.put(UserController());
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: chatsController.getChatRoomDetails(widget.id),
-        builder: (context, snapshot) {
+        builder: (context, dynamic snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return const Scaffold(
@@ -83,7 +84,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 'assets/icons/video_call.svg',
                                 color: Colors.blue,
                               ),
-                              onPressed: () async {},
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, CallingPage.routeName);
+                              },
                             ),
                             IconButton(
                                 icon: SvgPicture.asset(

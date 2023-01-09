@@ -142,7 +142,14 @@ class ChatsController extends GetxController {
   // ignore: prefer_typing_uninitialized_variables
   late IOWebSocketChannel socketChannel;
   RTCPeerConnection? peerConnection;
+
+  final localVideoRenderer = RTCVideoRenderer();
+  final remoteVideoRenderer = RTCVideoRenderer();
   var offer = false.obs;
+  var candidate = ''.obs;
+
+  MediaStream? localStream;
+  MediaStream? remoteStream;
 
   getChats() async {
     try {
@@ -159,11 +166,11 @@ class ChatsController extends GetxController {
     var featchedRoomDetailsApi = await ChatServices().featchChatDetails(roomId);
     chatRoomDetails.value = featchedRoomDetailsApi;
 
-    socketChannel.stream.listen((event) {
-      print(event);
-      chatRoomDetails.update('messages',
-          (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
-    });
+    // socketChannel.stream.listen((event) {
+    //   print(event);
+    //   chatRoomDetails.update('messages',
+    //       (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
+    // });
   }
 
   onSendChatMsg() async {
@@ -199,6 +206,67 @@ class ChatsController extends GetxController {
     }
   }
 
+  getUserMedia() async {
+    final Map<String, dynamic> mediaConstraints = {
+      'audio': true,
+      'video': {
+        'facingMode': 'user',
+      }
+    };
+
+    MediaStream stream =
+        await navigator.mediaDevices.getUserMedia(mediaConstraints);
+
+    localVideoRenderer.srcObject = stream;
+    return stream;
+  }
+
+  createPeerConnecion() async {
+    Map<String, dynamic> configuration = {
+      "iceServers": [
+        {"url": "stun:stun.l.google.com:19302"},
+      ]
+    };
+
+    final Map<String, dynamic> offerSdpConstraints = {
+      "mandatory": {
+        "OfferToReceiveAudio": true,
+        "OfferToReceiveVideo": true,
+      },
+      "optional": [],
+    };
+
+    localStream = await getUserMedia();
+
+    RTCPeerConnection pc =
+        await createPeerConnection(configuration, offerSdpConstraints);
+
+    pc.addStream(localStream!);
+
+    pc.onIceCandidate = (e) {
+      if (e.candidate != null) {
+        var candidateData = json.encode({
+          'candidate': e.candidate.toString(),
+          'sdpMid': e.sdpMid.toString(),
+          'sdpMlineIndex': e.sdpMLineIndex,
+        });
+        print(candidateData);
+        candidate.value = candidateData;
+      }
+    };
+
+    pc.onIceConnectionState = (e) {
+      print(e);
+    };
+
+    pc.onAddStream = (stream) {
+      remoteVideoRenderer.srcObject = stream;
+      print('stream: ' + stream.id);
+    };
+
+    peerConnection = pc;
+  }
+
   void createOffer() async {
     try {
       RTCSessionDescription description =
@@ -208,21 +276,36 @@ class ChatsController extends GetxController {
       offer.value = true;
 
       peerConnection!.setLocalDescription(description);
-      socketChannel.sink.add(json.encode(session));
+      var payload = {
+        'event_type': 'sdp.receive',
+        'mobile': '2222222222',
+        'sdp': json.encode(session)
+      };
+      socketChannel.sink.add(payload);
     } catch (_) {
       toasterUnknownFailure();
     }
   }
 
   void createAnswer() async {
-    RTCSessionDescription description =
-        await peerConnection!.createAnswer({'offerToReceiveVideo': 1});
+    try {
+      RTCSessionDescription description =
+          await peerConnection!.createAnswer({'offerToReceiveVideo': 1});
 
-    var session = parse(description.sdp.toString());
-    print(json.encode(session));
+      var session = parse(description.sdp.toString());
+      print(json.encode(session));
 
-    peerConnection!.setLocalDescription(description);
-    socketChannel.sink.add(json.encode(session));
+      peerConnection!.setLocalDescription(description);
+      var payload = {
+        'event_type': 'sdp.receive',
+        'mobile': '1111111111',
+        'sdp': json.encode(session),
+        'candidate': candidate.value
+      };
+      socketChannel.sink.add(json.encode(session));
+    } catch (e) {
+      toasterUnknownFailure();
+    }
   }
 
   void setRemoteDescription(String sessionString) async {
@@ -247,7 +330,17 @@ class ChatsController extends GetxController {
     await peerConnection!.addCandidate(candidate);
   }
 
-  sdpExchange(bool isOffer) async {}
+  sdpExchange() {
+    socketChannel.stream.listen((event) {
+      var payload = json.decode(event);
+      setRemoteDescription(payload['sdp']);
+      if (offer.value == false) {
+        createAnswer();
+      } else if (payload['candidate'] != null) {
+        addCandidate(payload['candidate']);
+      }
+    });
+  }
 
   @override
   void onInit() {

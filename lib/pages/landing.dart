@@ -8,6 +8,7 @@ import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
 import 'package:sparrow/pages/chats.dart';
+import 'package:sparrow/pages/settingPage.dart';
 import 'package:sparrow/pages/status.dart';
 import 'package:sparrow/services/websockets.dart';
 import 'package:sparrow/utils/cache-manager.dart';
@@ -179,11 +180,9 @@ class _LandingScreenState extends State<LandingScreen> {
                   ],
                 ),
                 IconButton(
-                    onPressed: () async {
-                      await CacheStorage().removeAuthCards();
-
+                    onPressed: () {
                       Navigator.pushReplacementNamed(
-                          context, AuthScreen.routeName);
+                          context, '/landing/${SettingPage.routeName}');
                     },
                     icon: const Icon(
                       Icons.more_vert,
@@ -200,6 +199,8 @@ class _LandingScreenState extends State<LandingScreen> {
               const Expanded(child: CallsScreen())
             } else if (widget.subRoute == StatusScreen.routeName) ...{
               const Expanded(child: StatusScreen())
+            } else if (widget.subRoute == SettingPage.routeName) ...{
+              const Expanded(child: SettingPage())
             }
           ],
         ),
