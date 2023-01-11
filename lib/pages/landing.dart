@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:sparrow/controllers/chatsController.dart';
 import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
@@ -26,12 +27,15 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   final webSockets = WebSockets();
   final userController = Get.put(UserController());
+  final chatsController = Get.put(ChatsController());
 
   @override
   void initState() {
+    // CacheStorage().removeAuthCards();
+    // chatsController.remoteVideoRenderer.initialize();
+    chatsController.createPeerConnecion();
+    webSockets.initWebSocketConnection();
     Future.delayed(Duration.zero, () async {
-      await webSockets.initWebSocketConnection();
-
       final authCards = await CacheStorage().getAuthCards();
 
       bool invalidCreds;

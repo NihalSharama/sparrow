@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -141,12 +142,18 @@ class ChatsController extends GetxController {
   var inputMsg = TextEditingController().obs;
   // ignore: prefer_typing_uninitialized_variables
   late IOWebSocketChannel socketChannel;
+  late Stream streamController;
   RTCPeerConnection? peerConnection;
 
   final localVideoRenderer = RTCVideoRenderer();
   final remoteVideoRenderer = RTCVideoRenderer();
+
   var offer = false.obs;
+  var isVideoCall = false.obs;
+  var answerData = {}.obs;
   var candidate = ''.obs;
+  var callingStatus = ''.obs;
+  var isAnswerSent = false.obs;
 
   MediaStream? localStream;
   MediaStream? remoteStream;
@@ -168,8 +175,8 @@ class ChatsController extends GetxController {
 
     // socketChannel.stream.listen((event) {
     //   print(event);
-    //   chatRoomDetails.update('messages',
-    //       (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
+    // chatRoomDetails.update('messages',
+    //     (value) => chatRoomDetails.value['messages'] + [json.decode(event)]);
     // });
   }
 
@@ -191,7 +198,8 @@ class ChatsController extends GetxController {
         'message': inputMsg.value.text,
         'created_at': msgSentRes['data']['created_at'],
         'status': msgSentRes['data']['status'],
-        'isStarred': msgSentRes['data']['isStarred']
+        'isStarred': msgSentRes['data']['isStarred'],
+        'event_type': 'chat.receive'
       };
 
       socketChannel.sink.add(json.encode(msgObj));
@@ -206,7 +214,7 @@ class ChatsController extends GetxController {
     }
   }
 
-  getUserMedia() async {
+  addUserMedia() async {
     final Map<String, dynamic> mediaConstraints = {
       'audio': true,
       'video': {
@@ -218,6 +226,10 @@ class ChatsController extends GetxController {
         await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
     localVideoRenderer.srcObject = stream;
+    stream.getTracks().forEach((track) {
+      peerConnection!.addTrack(track, stream);
+    });
+
     return stream;
   }
 
@@ -236,22 +248,33 @@ class ChatsController extends GetxController {
       "optional": [],
     };
 
-    localStream = await getUserMedia();
-
+    // localStream = await addUserMedia();
     RTCPeerConnection pc =
         await createPeerConnection(configuration, offerSdpConstraints);
 
-    pc.addStream(localStream!);
+    // pc.addStream(localStream!);
 
     pc.onIceCandidate = (e) {
       if (e.candidate != null) {
-        var candidateData = json.encode({
+        var candidateData = {
           'candidate': e.candidate.toString(),
           'sdpMid': e.sdpMid.toString(),
           'sdpMlineIndex': e.sdpMLineIndex,
-        });
+        };
         print(candidateData);
-        candidate.value = candidateData;
+
+        if (!offer.value && !isAnswerSent.value) {
+          var payload = {
+            "event_type": "sdp.receive",
+            "receiver_mobile": answerData.value['receiver_mobile'],
+            "sdp": answerData.value['sdp'],
+            "candidate": candidateData
+          };
+
+          print('answer data: $payload');
+          socketChannel.sink.add(json.encode(payload));
+          isAnswerSent.value = true;
+        }
       }
     };
 
@@ -261,70 +284,71 @@ class ChatsController extends GetxController {
 
     pc.onAddStream = (stream) {
       remoteVideoRenderer.srcObject = stream;
-      print('stream: ' + stream.id);
+      print('stream: ${stream.id}');
     };
 
     peerConnection = pc;
   }
 
-  void createOffer() async {
+  createOffer() async {
     try {
       RTCSessionDescription description =
           await peerConnection!.createOffer({'offerToReceiveVideo': 1});
       var session = parse(description.sdp.toString());
-      print(json.encode(session));
       offer.value = true;
 
       peerConnection!.setLocalDescription(description);
       var payload = {
         'event_type': 'sdp.receive',
-        'mobile': '2222222222',
-        'sdp': json.encode(session)
+        'receiver_mobile':
+            chatRoomDetails.value['receiver_info']['mobile'].toString(),
+        'caller_mobile': '1111111111',
+        'sdp': session
       };
-      socketChannel.sink.add(payload);
+      socketChannel.sink.add(json.encode(payload));
+      print('offer: ${json.encode(payload)}');
+      return payload;
     } catch (_) {
       toasterUnknownFailure();
     }
   }
 
-  void createAnswer() async {
+  void createAnswer(String callerNumber) async {
     try {
       RTCSessionDescription description =
           await peerConnection!.createAnswer({'offerToReceiveVideo': 1});
 
       var session = parse(description.sdp.toString());
-      print(json.encode(session));
 
       peerConnection!.setLocalDescription(description);
-      var payload = {
-        'event_type': 'sdp.receive',
-        'mobile': '1111111111',
-        'sdp': json.encode(session),
-        'candidate': candidate.value
+      var answer = {
+        'receiver_mobile': callerNumber,
+        'sdp': session,
       };
-      socketChannel.sink.add(json.encode(session));
+      print('answer: ${json.encode(answer)}');
+      answerData.value = answer;
+      // socketChannel.sink.add(json.encode(payload));
     } catch (e) {
       toasterUnknownFailure();
     }
   }
 
-  void setRemoteDescription(String sessionString) async {
+  void setRemoteDescription(session) async {
     // String jsonString = sdpController.text;
-    dynamic session = await jsonDecode(sessionString);
+    // dynamic session = await jsonDecode(sessionString);
 
     String sdp = write(session, null);
-
     RTCSessionDescription description =
         RTCSessionDescription(sdp, offer.value ? 'answer' : 'offer');
-    print(description.toMap());
+    print('description: ${description.toMap()}');
 
     await peerConnection!.setRemoteDescription(description);
   }
 
-  void addCandidate(String sessionString) async {
+  void addCandidate(session) async {
     // String jsonString = sdpController.text;
-    dynamic session = await jsonDecode(sessionString);
-    print('session : $sessionString');
+    // dynamic session = await jsonDecode(sessionString);
+    print('session : $session');
     dynamic candidate = RTCIceCandidate(
         session['candidate'], session['sdpMid'], session['sdpMlineIndex']);
     await peerConnection!.addCandidate(candidate);
@@ -335,10 +359,11 @@ class ChatsController extends GetxController {
       var payload = json.decode(event);
       setRemoteDescription(payload['sdp']);
       if (offer.value == false) {
-        createAnswer();
+        createAnswer('1111111111');
       } else if (payload['candidate'] != null) {
         addCandidate(payload['candidate']);
       }
+      return event;
     });
   }
 

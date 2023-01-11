@@ -36,6 +36,7 @@ class WebSockets {
           headers: {'token': token, "origin": '${dotenv.env['WS_URI']}/'});
 
       chatController.socketChannel = channel;
+      chatController.streamController = channel.stream.asBroadcastStream();
       print("socket connection initializied");
     } catch (e) {
       print('faild to connect ws');

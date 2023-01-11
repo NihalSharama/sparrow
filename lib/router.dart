@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 Route<dynamic> genarateRoute(RouteSettings routeSettings) {
   final List<String> path = routeSettings.name!.split('/');
 
+  print('path: $path');
+
   if (routeSettings.name!.contains(LandingScreen.routeName)) {
     return MaterialPageRoute(
       settings: routeSettings,
@@ -17,6 +19,11 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
       settings: routeSettings,
       builder: (_) => ChatRoomScreen(id: path[1]),
     );
+  } else if (routeSettings.name!.contains(CallingPage.routeName)) {
+    return MaterialPageRoute(
+      settings: routeSettings,
+      builder: (_) => CallingPage(isVideoCall: path[1] == 'video'),
+    );
   }
 
   switch (routeSettings.name) {
@@ -24,12 +31,6 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
       return PageRouteBuilder(
         settings: routeSettings,
         pageBuilder: (_, __, ___) => const AuthScreen(),
-      );
-
-    case CallingPage.routeName:
-      return PageRouteBuilder(
-        settings: routeSettings,
-        pageBuilder: (_, __, ___) => const CallingPage(),
       );
 
     default:
