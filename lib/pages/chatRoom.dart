@@ -202,15 +202,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                         ),
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: const Icon(Icons.photo_camera,
+                                    GestureDetector(
+                                      child: const Icon(Icons.photo_camera,
                                           color: Colors.blueAccent),
-                                      onPressed: () {},
+                                      onTap: () {},
                                     ),
-                                    IconButton(
-                                      icon: const Icon(Icons.attach_file,
+                                    GestureDetector(
+                                      child: const Icon(Icons.attach_file,
                                           color: Colors.blueAccent),
-                                      onPressed: () {},
+                                      onTap: () {},
                                     )
                                   ],
                                 ),

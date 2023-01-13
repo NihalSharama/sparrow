@@ -3,6 +3,7 @@ import 'package:sparrow/pages/chatRoom.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sparrow/pages/settingPage.dart';
 
 Route<dynamic> genarateRoute(RouteSettings routeSettings) {
   final List<String> path = routeSettings.name!.split('/');
@@ -23,6 +24,11 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
     return MaterialPageRoute(
       settings: routeSettings,
       builder: (_) => CallingPage(isVideoCall: path[1] == 'video'),
+    );
+  } else if (routeSettings.name!.contains(SettingPage.routeName)) {
+    return MaterialPageRoute(
+      settings: routeSettings,
+      builder: (_) => SettingPage(subroute: path[2]),
     );
   }
 

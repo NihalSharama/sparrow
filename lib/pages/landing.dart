@@ -204,7 +204,10 @@ class _LandingScreenState extends State<LandingScreen> {
             } else if (widget.subRoute == StatusScreen.routeName) ...{
               const Expanded(child: StatusScreen())
             } else if (widget.subRoute == SettingPage.routeName) ...{
-              const Expanded(child: SettingPage())
+              Expanded(
+                  child: SettingPage(
+                subroute: '',
+              ))
             }
           ],
         ),

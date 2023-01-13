@@ -33,4 +33,5 @@ class AppColors {
   static const storyViewButtonColor = Color.fromRGBO(116, 116, 116, 68);
   static const textFieldColor = Color.fromRGBO(223, 223, 223, 100);
   static const attendence = Color.fromRGBO(244, 243, 243, 94);
+  static const settingPageColor = Color.fromRGBO(239, 239, 244, 100);
 }

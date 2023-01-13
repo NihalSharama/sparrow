@@ -3,6 +3,7 @@ import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/calls/calling_page.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/search.dart';
+import 'package:sparrow/pages/selectContactPage.dart';
 import 'package:sparrow/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -30,10 +31,8 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: "Let's Talk",
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
-        onGenerateRoute: (settings) =>
-            genarateRoute(settings), // auto genarating routes
-        home: LandingScreen(
-          subRoute: 'chats',
-        )); //
+        // onGenerateRoute: (settings) =>
+        //     genarateRoute(settings), // auto genarating routes
+        home: SelectContact()); //
   }
 }
