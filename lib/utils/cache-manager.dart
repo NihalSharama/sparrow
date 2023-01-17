@@ -48,4 +48,26 @@ class CacheStorage {
         .doc('chat-conversations')
         .delete();
   }
+
+  getContacts() async {
+    final constacts =
+        await db.collection('user-contacts').doc('user-contacts').get();
+
+    if (constacts == null) {
+      return;
+    }
+    return constacts;
+  }
+
+  removeContacts() async {
+    await db.collection('user-contacts').doc('user-contacts').delete();
+  }
+
+  saveContacts(contacts) {
+    // auth cards contain token and refresh token
+    db
+        .collection('user-contacts')
+        .doc('user-contacts')
+        .set({'contacts': contacts});
+  }
 }

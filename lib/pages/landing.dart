@@ -185,8 +185,10 @@ class _LandingScreenState extends State<LandingScreen> {
                 ),
                 IconButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, '/landing/${SettingPage.routeName}');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingPage()));
                     },
                     icon: const Icon(
                       Icons.more_vert,
