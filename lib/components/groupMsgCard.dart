@@ -50,9 +50,8 @@ class GroupMsgCardComponent extends StatelessWidget {
           (fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start),
       children: [
         Card(
-          color: (fromMe
-              ? const Color.fromARGB(255, 231, 255, 211)
-              : const Color.fromARGB(255, 255, 255, 255)),
+          color:
+              (fromMe ? AppColors.myMsgCardColor : AppColors.thereMsgCardColor),
           shape: RoundedRectangleBorder(
               side: BorderSide(
                   width: 2,
@@ -85,7 +84,8 @@ class GroupMsgCardComponent extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 8.0, right: 8),
                       child: Text(
                         fromName!,
-                        style: TextStyle(color: Colors.purple),
+                        style: const TextStyle(
+                            color: const Color.fromARGB(255, 219, 70, 245)),
                       ),
                     ),
                   if (document != null) ...{
@@ -204,12 +204,13 @@ class GroupMsgCardComponent extends StatelessWidget {
                                 left: BorderSide(
                                     color: (replyOfObj!['replyTo_user'] ==
                                             userController.user['mobile']
-                                        ? Colors.purple
+                                        ? const Color.fromARGB(
+                                            255, 219, 70, 245)
                                         : const Color.fromARGB(
-                                            255, 0, 150, 135)),
+                                            255, 78, 180, 170)),
                                     width: 3)),
                             // borderRadius: BorderRadius.circular(6),
-                            color: Color.fromARGB(94, 231, 231, 231)),
+                            color: Color.fromARGB(50, 14, 14, 14)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -222,11 +223,12 @@ class GroupMsgCardComponent extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   color: (replyOfObj!['replyTo_user'] ==
                                           userController.user['mobile']
-                                      ? Colors.purple
-                                      : Color.fromARGB(255, 0, 150, 135))),
+                                      ? const Color.fromARGB(255, 219, 70, 245)
+                                      : const Color.fromARGB(
+                                          255, 78, 180, 170))),
                             ),
                             Text(replyOfObj!['reply_message'],
-                                style: const TextStyle(color: Colors.black54)),
+                                style: const TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -238,9 +240,10 @@ class GroupMsgCardComponent extends StatelessWidget {
                                 left: BorderSide(
                                     color: (replyOfObj!['replyTo_user'] ==
                                             userController.user['mobile']
-                                        ? Colors.purple
+                                        ? const Color.fromARGB(
+                                            255, 219, 70, 245)
                                         : const Color.fromARGB(
-                                            255, 0, 150, 135)),
+                                            255, 78, 180, 170)),
                                     width: 3)),
                             // borderRadius: BorderRadius.circular(6),
                             color: const Color.fromARGB(94, 231, 231, 231)),
@@ -276,8 +279,9 @@ class GroupMsgCardComponent extends StatelessWidget {
                                   width: 15,
                                   color: (replyOfObj!['replyTo_user'] ==
                                           userController.user['mobile']
-                                      ? Colors.purple
-                                      : const Color.fromARGB(255, 0, 150, 135)),
+                                      ? const Color.fromARGB(255, 219, 70, 245)
+                                      : const Color.fromARGB(
+                                          255, 78, 180, 170)),
                                 ),
                               ],
                             ),
@@ -297,8 +301,7 @@ class GroupMsgCardComponent extends StatelessWidget {
                           ),
                           child: Text(
                             text,
-                            style: const TextStyle(
-                                color: (Color.fromARGB(255, 43, 43, 43))),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         Positioned(
@@ -307,8 +310,7 @@ class GroupMsgCardComponent extends StatelessWidget {
                           child: Text(
                             timestamp,
                             style: const TextStyle(
-                                color: (Color.fromARGB(255, 43, 43, 43)),
-                                fontSize: 8),
+                                color: Colors.white, fontSize: 8),
                           ),
                         )
                       ],

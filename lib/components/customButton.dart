@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:sparrow/common/global_variables.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -19,7 +20,7 @@ class CustomButton extends StatelessWidget {
     required this.text,
     this.width = 0,
     this.height = 0,
-    this.color = Colors.blue,
+    this.color = AppColors.appBarColor,
     this.textcolor = Colors.white,
     this.elevation = 1,
   }) : super(key: key);
@@ -57,7 +58,7 @@ class CustomButtonBordered extends StatelessWidget {
       required this.onPressed,
       this.width = 0,
       this.height = 0,
-      this.color = Colors.blue})
+      this.color = AppColors.appBarColor})
       : super(key: key);
 
   @override

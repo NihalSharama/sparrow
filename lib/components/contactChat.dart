@@ -101,7 +101,7 @@ class _ContactChatCardComponentState extends State<ContactChatCardComponent> {
                       isSelected
                           ? const Icon(
                               Icons.check_circle,
-                              color: Colors.blue,
+                              color: AppColors.appBarColor,
                             )
                           : const Icon(Icons.keyboard_arrow_right)
                     ],

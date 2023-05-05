@@ -7,6 +7,7 @@ import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sparrow/pages/rtc/receiveCall.dart';
+import 'package:sparrow/pages/usersFromContact.dart';
 
 class ReceiveCallArgs {
   final bool audioCall;
@@ -21,7 +22,7 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
   if (routeSettings.name!.contains(LandingScreen.routeName)) {
     return MaterialPageRoute(
       settings: routeSettings,
-      builder: (_) => LandingScreen(subRoute: path[2]),
+      builder: (_) => const LandingScreen(),
     );
   } else if (routeSettings.name!.contains(GroupChatRoomScreen.routeName)) {
     return MaterialPageRoute(
@@ -50,6 +51,11 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
       return PageRouteBuilder(
         settings: routeSettings,
         pageBuilder: (_, __, ___) => const ArchivedChats(),
+      );
+    case ContactUsers.routeName:
+      return PageRouteBuilder(
+        settings: routeSettings,
+        pageBuilder: (_, __, ___) => const ContactUsers(),
       );
 
     default:

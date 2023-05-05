@@ -1,6 +1,11 @@
+import 'dart:io' as io;
+
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/settings/settingPage.dart';
+import 'package:sparrow/services/firebase-notifications.dart';
 import 'package:sparrow/services/user-services.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
@@ -27,6 +32,7 @@ class UserController extends GetxController {
   ];
   var showOtp = false.obs;
   var otp = ''.obs;
+  var bgImage = ''.obs;
 
   updateUserProfile(
       GlobalKey<FormState> editNameFormKey,
@@ -151,8 +157,7 @@ class UserController extends GetxController {
       if (data['action'] == 'change-number') {
         CacheStorage().saveAuthCards(res['data']);
         user.value = res['data']['user'];
-        Navigator.pushReplacementNamed(
-            context, LandingScreen.routeName + SettingPage.routeName);
+        Navigator.pop(context);
       } else if (data['action'] == 'delete-user') {
         print(res);
         await CacheStorage().removeAuthCards();
@@ -162,8 +167,25 @@ class UserController extends GetxController {
     }
   }
 
+  void getBgImage() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final dirpath = dir.path;
+    final filePath = '$dirpath/sparrow_chat_background.png';
+
+    bool doesFileExists = await io.File(filePath).exists();
+    if (doesFileExists) {
+      bgImage.value = filePath;
+    }
+  }
+
+  logout() async {
+    await CacheStorage().removeAuthCards();
+    await FirebaseServices().removeTokenFromFirebase();
+  }
+
   @override
-  void onInit() {
+  void onInit() async {
+    getBgImage();
     super.onInit();
   }
 

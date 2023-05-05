@@ -226,7 +226,7 @@ class _CallScreenState extends State<CallScreen> {
             flex: 1,
             child: Container(
               decoration: const BoxDecoration(
-                  color: Color.fromARGB(235, 50, 216, 133),
+                  color: Color.fromARGB(255, 117, 147, 231),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),

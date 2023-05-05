@@ -39,7 +39,7 @@ class EditProfile extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_back_ios,
-              color: Colors.blue,
+              color: AppColors.appBarColor,
             ),
           ),
           title: const Text(
@@ -101,8 +101,8 @@ class EditProfile extends StatelessWidget {
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
-                                                  children: [
-                                                    const Text(
+                                                  children: const [
+                                                    Text(
                                                       "Pick From Gallery",
                                                       style: TextStyle(
                                                           color: AppColors
@@ -110,11 +110,11 @@ class EditProfile extends StatelessWidget {
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
-                                                    const SizedBox(width: 10),
+                                                    SizedBox(width: 10),
                                                     Icon(
                                                       Icons.photo,
-                                                      color:
-                                                          Colors.blue.shade300,
+                                                      color: Color.fromARGB(
+                                                          255, 133, 125, 190),
                                                     )
                                                   ],
                                                 ),
@@ -165,7 +165,7 @@ class EditProfile extends StatelessWidget {
                                   child: const Text(
                                     "Edit",
                                     style: TextStyle(
-                                        color: Colors.blue,
+                                        color: AppColors.appBarColor,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500),
                                   ),

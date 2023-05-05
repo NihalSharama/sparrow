@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/CustomPopup.dart';
 import 'package:sparrow/components/chat.dart';
@@ -149,7 +151,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
 
-    print('opened chat');
     return FutureBuilder(
       future: chatsController.getChatRoomDetails(widget.id),
       builder: (context, snapshot) {
@@ -164,114 +165,105 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             return Obx(() {
               var messages = chatsController.chatRoomDetails.value["messages"];
               return Scaffold(
-                body: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(top: 40.0, bottom: 5),
-                      decoration:
-                          const BoxDecoration(color: AppColors.appBarColor),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushReplacementNamed(
-                                        context,
-                                        LandingScreen.routeName +
-                                            ChatsScreen.routeName);
-                                  },
-                                  child: const Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: Color.fromARGB(255, 223, 223, 223),
-                                    size: 35,
+                body: Container(
+                  decoration: userController.bgImage.value != ''
+                      ? BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  FileImage(File(userController.bgImage.value)),
+                              fit: BoxFit.fill,
+                              colorFilter: ColorFilter.mode(
+                                  Colors.black.withOpacity(0.15),
+                                  BlendMode.darken)),
+                        )
+                      : const BoxDecoration(
+                          color: Color.fromARGB(255, 246, 246, 246)),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 40.0, bottom: 5),
+                        decoration:
+                            const BoxDecoration(color: AppColors.appBarColor),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Color.fromARGB(255, 223, 223, 223),
+                                      size: 20,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context,
-                                        ChatRoomInfo.routeName + widget.id);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      if (chatsController
-                                              .chatRoomDetails['avatar'] ==
-                                          null) ...{
-                                        const CircleAvatar(
-                                            maxRadius: 20,
-                                            minRadius: 20,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/default.jpg')),
-                                      } else ...{
-                                        CircleAvatar(
-                                          // backgroundColor: Colors.amber,
-                                          backgroundImage: NetworkImage(
-                                              '${dotenv.env['SERVER_MEDIA_URI']}${chatsController.chatRoomDetails['avatar']}'),
-                                          radius: 20,
-                                        )
-                                      },
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            chatsController.chatRoomDetails
-                                                .value["conv_name"],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white),
-                                          ),
-                                          Text(
-                                            chatsController
-                                                        .activeStatus.value ==
-                                                    ''
-                                                ? 'Tap here for contact info'
-                                                : chatsController
-                                                    .activeStatus.value,
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white),
+                                  SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context,
+                                          ChatRoomInfo.routeName + widget.id);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        if (chatsController
+                                                .chatRoomDetails['avatar'] ==
+                                            null) ...{
+                                          const CircleAvatar(
+                                              maxRadius: 20,
+                                              minRadius: 20,
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/default.jpg')),
+                                        } else ...{
+                                          CircleAvatar(
+                                            // backgroundColor: Colors.amber,
+                                            backgroundImage: NetworkImage(
+                                                '${dotenv.env['SERVER_MEDIA_URI']}${chatsController.chatRoomDetails['avatar']}'),
+                                            radius: 20,
                                           )
-                                        ],
-                                      ),
-                                    ],
+                                        },
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              chatsController.chatRoomDetails
+                                                  .value["conv_name"],
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                            ),
+                                            Text(
+                                              chatsController
+                                                          .activeStatus.value ==
+                                                      ''
+                                                  ? 'Tap here for contact info'
+                                                  : chatsController
+                                                      .activeStatus.value,
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.videocam,
-                                    color: Color.fromRGBO(255, 255, 255, 1),
-                                  ),
-                                  onPressed: () {
-                                    var recvMobileNo = chatsController
-                                        .chatRoomDetails
-                                        .value["receiver_info"]["mobile"]
-                                        .toString();
-
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => CallScreen(
-                                                  recvMobile: recvMobileNo,
-                                                  audioCall: false,
-                                                )));
-                                  },
-                                ),
-                                IconButton(
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
                                     icon: const Icon(
-                                      Icons.phone,
-                                      color: Colors.white,
+                                      Icons.videocam,
+                                      color: Color.fromRGBO(255, 255, 255, 1),
                                     ),
                                     onPressed: () {
                                       var recvMobileNo = chatsController
@@ -284,437 +276,464 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                           MaterialPageRoute(
                                               builder: (context) => CallScreen(
                                                     recvMobile: recvMobileNo,
-                                                    audioCall: true,
+                                                    audioCall: false,
                                                   )));
-                                    }),
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return CustomPopup(
-                                              elements: Column(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(6.0),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                const StarredMessage()));
-                                                  },
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: const [
-                                                      Text(
-                                                        "Starred Messages",
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .titleColorExtraLight,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Icon(
-                                                        Icons.star,
-                                                        color:
-                                                            Colors.yellowAccent,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const Divider(
-                                                color: AppColors
-                                                    .backgroundGrayLight,
-                                                thickness: 1.2,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(6.0),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return CustomPopup(
-                                                              elements: Column(
-                                                            children: [
-                                                              Text(
-                                                                'Are you Sure do you want to delete the conversation \n  You may have some memories with it ',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .orange
-                                                                        .shade700),
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              CustomButton(
-                                                                onPressed: () {
-                                                                  chatsController.deleteConversation(chatsController
-                                                                      .chatRoomDetails[
-                                                                          'id']
-                                                                      .toString());
-
-                                                                  Navigator.pushReplacementNamed(
-                                                                      context,
-                                                                      LandingScreen
-                                                                              .routeName +
-                                                                          ChatsScreen
-                                                                              .routeName);
-                                                                },
-                                                                text: 'Delete',
-                                                                color:
-                                                                    Colors.red,
-                                                              )
-                                                            ],
-                                                          ));
-                                                        });
-                                                  },
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      const Text(
-                                                        "Delete Conversation",
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .titleColorExtraLight,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Icon(
-                                                        Icons.delete,
-                                                        color:
-                                                            Colors.red.shade400,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ));
-                                        });
-                                  },
-                                  child: const Icon(
-                                    Icons.more_vert,
-                                    color: Colors.white,
+                                    },
                                   ),
-                                ),
-                                const SizedBox(width: 5),
-                              ],
-                            )
-                          ],
+                                  IconButton(
+                                      icon: const Icon(
+                                        Icons.phone,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        var recvMobileNo = chatsController
+                                            .chatRoomDetails
+                                            .value["receiver_info"]["mobile"]
+                                            .toString();
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CallScreen(
+                                                      recvMobile: recvMobileNo,
+                                                      audioCall: true,
+                                                    )));
+                                      }),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomPopup(
+                                                elements: Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(6.0),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const StarredMessage()));
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: const [
+                                                        Text(
+                                                          "Starred Messages",
+                                                          style: TextStyle(
+                                                              color: AppColors
+                                                                  .titleColorExtraLight,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Icon(
+                                                          Icons.star,
+                                                          color: Colors
+                                                              .yellowAccent,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Divider(
+                                                  color: AppColors
+                                                      .backgroundGrayLight,
+                                                  thickness: 1.2,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(6.0),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return CustomPopup(
+                                                                elements:
+                                                                    Column(
+                                                              children: [
+                                                                Text(
+                                                                  'Are you Sure do you want to delete the conversation \n  You may have some memories with it ',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .orange
+                                                                          .shade700),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                CustomButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    chatsController.deleteConversation(chatsController
+                                                                        .chatRoomDetails[
+                                                                            'id']
+                                                                        .toString());
+
+                                                                    Navigator.pushReplacementNamed(
+                                                                        context,
+                                                                        LandingScreen
+                                                                            .routeName);
+                                                                  },
+                                                                  text:
+                                                                      'Delete',
+                                                                  color: Colors
+                                                                      .red,
+                                                                )
+                                                              ],
+                                                            ));
+                                                          });
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        const Text(
+                                                          "Delete Conversation",
+                                                          style: TextStyle(
+                                                              color: AppColors
+                                                                  .titleColorExtraLight,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        Icon(
+                                                          Icons.delete,
+                                                          color: Colors
+                                                              .red.shade400,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ));
+                                          });
+                                    },
+                                    child: const Icon(
+                                      Icons.more_vert,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    if (messages.length == 0 || messages == null)
-                      Expanded(
+                      if (messages.length == 0 || messages == null)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'No Messages Sent!',
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.titleColorLight),
+                                ),
+                                Text(
+                                  'Say Hi To Start A Lovely Conversation 😉',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: AppColors.titleColorExtraLight),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        Expanded(
+                            child: Material(
+                                borderRadius: BorderRadius.circular(5.0),
+                                color: Colors.transparent,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  controller: scrollController,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: chatsController
+                                      .chatRoomDetails.value['messages'].length,
+                                  itemBuilder: (context, index) {
+                                    final message = messages[index];
+
+                                    return SwipeTo(
+                                      onRightSwipe: () {
+                                        chatsController.replyMessage.value =
+                                            message;
+
+                                        focusNode.requestFocus();
+                                      },
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: GestureDetector(
+                                            onLongPress: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return MsgMenuPopup(
+                                                    message: message,
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: MsgCardComponent(
+                                              id: message['id'].toString(),
+                                              text: BasicAppUtils().utf8convert(
+                                                  message['message']),
+                                              time: DateTime.parse(
+                                                  message['created_at']),
+                                              isStarred: message['isStarred'],
+                                              msgStatus: message['status'],
+                                              from: message['sender'],
+                                              document: message['document'],
+                                              replyOf: message['replyOf'],
+                                            ),
+                                          )),
+                                    );
+                                  },
+                                ))),
+                      Container(
+                        color: Color.fromARGB(0, 82, 82, 82),
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
+                          padding: const EdgeInsets.only(
+                              left: 4, right: 4, bottom: 10, top: 5),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'No Messages Sent!',
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.titleColorLight),
-                              ),
-                              Text(
-                                'Say Hi To Start A Lovely Conversation 😉',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.titleColorExtraLight),
+                            children: [
+                              if (chatsController.replyMessage.value.isNotEmpty)
+                                buildReply()
+                              else if (chatsController
+                                  .selectedFilePath.value.isNotEmpty)
+                                buildSendFile(),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 208, 205, 224),
+                                        borderRadius:
+                                            BorderRadius.circular(35.0),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15.0),
+                                              child: TextField(
+                                                focusNode: focusNode,
+                                                controller: chatsController
+                                                    .inputMsg.value,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  hintText: "Type Something...",
+                                                  hintStyle: TextStyle(
+                                                      color: AppColors
+                                                          .titleColorLight,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.photo_camera,
+                                                color: AppColors
+                                                    .titleColorExtraLight),
+                                            onPressed: () async {
+                                              await chatsController
+                                                  .clickPhoto();
+
+                                              focusNode.requestFocus();
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.attach_file,
+                                                color: AppColors
+                                                    .titleColorExtraLight),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return CustomPopup(
+                                                      elements: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(6.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            chatsController
+                                                                .selectPhoto();
+
+                                                            Navigator.pop(
+                                                                context);
+                                                            focusNode
+                                                                .requestFocus();
+                                                          },
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: const [
+                                                              Text(
+                                                                "Select Image",
+                                                                style: TextStyle(
+                                                                    color: AppColors
+                                                                        .titleColorExtraLight,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 10),
+                                                              Icon(
+                                                                Icons.photo,
+                                                                color: AppColors
+                                                                    .titleColorLight,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const Divider(
+                                                        color: AppColors
+                                                            .backgroundGrayLight,
+                                                        thickness: 1.2,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(6.0),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            chatsController
+                                                                .selectDocument();
+                                                            Navigator.pop(
+                                                                context);
+                                                            focusNode
+                                                                .requestFocus();
+                                                          },
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: const [
+                                                              Text(
+                                                                "Select Document",
+                                                                style: TextStyle(
+                                                                    color: AppColors
+                                                                        .titleColorExtraLight,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 10),
+                                                              Icon(
+                                                                Icons
+                                                                    .file_present_rounded,
+                                                                color: AppColors
+                                                                    .titleColorLight,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ));
+                                                },
+                                              );
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  GestureDetector(
+                                    onTap: (() {
+                                      chatsController
+                                          .onSendChatMsg(userController
+                                              .user['mobile']
+                                              .toString())
+                                          .then((value) {
+                                        if (value.containsKey("success")) {
+                                          bool success = value["success"];
+                                          if (success) {
+                                            chatsController.replyMessage.value =
+                                                {};
+                                            SimpleWebSocket chatWS =
+                                                socketController.chatWS_.value;
+
+                                            if (value.containsKey("data")) {
+                                              var message = value['data'];
+
+                                              chatWS.send(json.encode(message));
+
+                                              FirebaseServices()
+                                                  .sendPushNotification(
+                                                      chatsController
+                                                          .chatRoomDetails
+                                                          .value[
+                                                              'receiver_info']
+                                                              ['mobile']
+                                                          .toString(),
+                                                      'notification.chat',
+                                                      'Sparrow',
+                                                      'New Message Arrived',
+                                                      {
+                                                    'id': chatsController
+                                                        .chatRoomDetails
+                                                        .value['id']
+                                                        .toString()
+                                                  });
+                                            }
+                                          }
+                                        }
+                                      });
+                                    }),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(15.0),
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.appBarColor,
+                                          shape: BoxShape.circle),
+                                      child: const InkWell(
+                                        child: (Icon(Icons.send_sharp,
+                                            color: Colors.white, size: 18)),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ],
                           ),
                         ),
-                      )
-                    else
-                      Expanded(
-                          child: Material(
-                              borderRadius: BorderRadius.circular(5.0),
-                              color: const Color.fromARGB(255, 246, 246, 246),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                reverse: true,
-                                controller: scrollController,
-                                scrollDirection: Axis.vertical,
-                                itemCount: chatsController
-                                    .chatRoomDetails.value['messages'].length,
-                                itemBuilder: (context, index) {
-                                  final message = messages[index];
-
-                                  return SwipeTo(
-                                    onRightSwipe: () {
-                                      chatsController.replyMessage.value =
-                                          message;
-
-                                      focusNode.requestFocus();
-                                    },
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: GestureDetector(
-                                          onLongPress: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return MsgMenuPopup(
-                                                  message: message,
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: MsgCardComponent(
-                                            id: message['id'].toString(),
-                                            text: BasicAppUtils().utf8convert(
-                                                message['message']),
-                                            time: DateTime.parse(
-                                                message['created_at']),
-                                            isStarred: message['isStarred'],
-                                            msgStatus: message['status'],
-                                            from: message['sender'],
-                                            document: message['document'],
-                                            replyOf: message['replyOf'],
-                                          ),
-                                        )),
-                                  );
-                                },
-                              ))),
-                    Material(
-                      color: const Color.fromARGB(255, 246, 246, 246),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 4, right: 4, bottom: 10, top: 5),
-                        child: Column(
-                          children: [
-                            if (chatsController.replyMessage.value.isNotEmpty)
-                              buildReply()
-                            else if (chatsController
-                                .selectedFilePath.value.isNotEmpty)
-                              buildSendFile(),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromRGBO(
-                                          200, 231, 229, 1),
-                                      borderRadius: BorderRadius.circular(35.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 15.0),
-                                            child: TextField(
-                                              focusNode: focusNode,
-                                              controller: chatsController
-                                                  .inputMsg.value,
-                                              decoration: const InputDecoration(
-                                                hintText: "Type Something...",
-                                                hintStyle: TextStyle(
-                                                    color: AppColors
-                                                        .titleColorLight,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                                border: InputBorder.none,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.photo_camera,
-                                              color: AppColors
-                                                  .titleColorExtraLight),
-                                          onPressed: () async {
-                                            await chatsController.clickPhoto();
-
-                                            focusNode.requestFocus();
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.attach_file,
-                                              color: AppColors
-                                                  .titleColorExtraLight),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return CustomPopup(
-                                                    elements: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              6.0),
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          chatsController
-                                                              .selectPhoto();
-
-                                                          Navigator.pop(
-                                                              context);
-                                                          focusNode
-                                                              .requestFocus();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: const [
-                                                            Text(
-                                                              "Select Image",
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .titleColorExtraLight,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Icon(
-                                                              Icons.photo,
-                                                              color: AppColors
-                                                                  .titleColorLight,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const Divider(
-                                                      color: AppColors
-                                                          .backgroundGrayLight,
-                                                      thickness: 1.2,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              6.0),
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          chatsController
-                                                              .selectDocument();
-                                                          Navigator.pop(
-                                                              context);
-                                                          focusNode
-                                                              .requestFocus();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: const [
-                                                            Text(
-                                                              "Select Document",
-                                                              style: TextStyle(
-                                                                  color: AppColors
-                                                                      .titleColorExtraLight,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Icon(
-                                                              Icons
-                                                                  .file_present_rounded,
-                                                              color: AppColors
-                                                                  .titleColorLight,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ));
-                                              },
-                                            );
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 15),
-                                GestureDetector(
-                                  onTap: (() {
-                                    chatsController
-                                        .onSendChatMsg(userController
-                                            .user['mobile']
-                                            .toString())
-                                        .then((value) {
-                                      if (value.containsKey("success")) {
-                                        bool success = value["success"];
-                                        if (success) {
-                                          chatsController.replyMessage.value =
-                                              {};
-                                          SimpleWebSocket chatWS =
-                                              socketController.chatWS_.value;
-
-                                          if (value.containsKey("data")) {
-                                            var message = value['data'];
-
-                                            chatWS.send(json.encode(message));
-
-                                            FirebaseServices()
-                                                .sendPushNotification(
-                                                    chatsController
-                                                        .chatRoomDetails
-                                                        .value['receiver_info']
-                                                            ['mobile']
-                                                        .toString(),
-                                                    'notification.chat',
-                                                    userController
-                                                        .user['mobile']
-                                                        .toString(),
-                                                    {
-                                                  'id': chatsController
-                                                      .chatRoomDetails
-                                                      .value['id']
-                                                      .toString()
-                                                });
-                                          }
-                                        }
-                                      }
-                                    });
-                                  }),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(15.0),
-                                    decoration: const BoxDecoration(
-                                        color: Color.fromRGBO(11, 114, 102, 1),
-                                        shape: BoxShape.circle),
-                                    child: const InkWell(
-                                      child: (Icon(Icons.send_sharp,
-                                          color: Colors.white, size: 18)),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             });

@@ -77,8 +77,8 @@ class MsgCardComponent extends StatelessWidget {
           key: Key(id),
           child: Card(
             color: (fromMe
-                ? const Color.fromARGB(255, 231, 255, 211)
-                : const Color.fromARGB(255, 255, 255, 255)),
+                ? AppColors.myMsgCardColor
+                : AppColors.thereMsgCardColor),
             shape: RoundedRectangleBorder(
                 side: BorderSide(
                     width: 2,
@@ -253,12 +253,11 @@ class MsgCardComponent extends StatelessWidget {
                                   left: BorderSide(
                                       color: (replyOfObj!['replyTo_user'] ==
                                               userController.user['mobile']
-                                          ? Colors.purple
-                                          : const Color.fromARGB(
-                                              255, 0, 150, 135)),
+                                          ? Color.fromARGB(255, 219, 70, 245)
+                                          : Color.fromARGB(255, 75, 168, 159)),
                                       width: 3)),
                               // borderRadius: BorderRadius.circular(6),
-                              color: Color.fromARGB(94, 231, 231, 231)),
+                              color: Color.fromARGB(43, 0, 0, 0)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -272,14 +271,13 @@ class MsgCardComponent extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                     color: (replyOfObj!['replyTo_user'] ==
                                             userController.user['mobile']
-                                        ? Colors.purple
-                                        : Color.fromARGB(255, 0, 150, 135))),
+                                        ? Color.fromARGB(255, 219, 70, 245)
+                                        : Color.fromARGB(255, 78, 180, 170))),
                               ),
                               Text(
                                   BasicAppUtils().utf8convert(
                                       replyOfObj!['reply_message']),
-                                  style:
-                                      const TextStyle(color: Colors.black54)),
+                                  style: const TextStyle(color: Colors.white)),
                             ],
                           ),
                         ),
@@ -291,12 +289,13 @@ class MsgCardComponent extends StatelessWidget {
                                   left: BorderSide(
                                       color: (replyOfObj!['replyTo_user'] ==
                                               userController.user['mobile']
-                                          ? Colors.purple
+                                          ? const Color.fromARGB(
+                                              255, 219, 70, 245)
                                           : const Color.fromARGB(
-                                              255, 0, 150, 135)),
+                                              255, 78, 180, 170)),
                                       width: 3)),
                               // borderRadius: BorderRadius.circular(6),
-                              color: Color.fromARGB(94, 231, 231, 231)),
+                              color: Color.fromARGB(50, 14, 14, 14)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -329,9 +328,10 @@ class MsgCardComponent extends StatelessWidget {
                                     width: 15,
                                     color: (replyOfObj!['replyTo_user'] ==
                                             userController.user['mobile']
-                                        ? Colors.purple
+                                        ? const Color.fromARGB(
+                                            255, 219, 70, 245)
                                         : const Color.fromARGB(
-                                            255, 0, 150, 135)),
+                                            255, 78, 180, 170)),
                                   ),
                                 ],
                               ),
@@ -352,8 +352,7 @@ class MsgCardComponent extends StatelessWidget {
                             child: Text(
                               text,
                               maxLines: 5,
-                              style: const TextStyle(
-                                  color: (Color.fromARGB(255, 43, 43, 43))),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                           Positioned(
@@ -365,8 +364,7 @@ class MsgCardComponent extends StatelessWidget {
                                 Text(
                                   timestamp,
                                   style: const TextStyle(
-                                      color: (Color.fromARGB(255, 43, 43, 43)),
-                                      fontSize: 8),
+                                      color: Colors.white, fontSize: 8),
                                 ),
                                 if (fromMe) ...{
                                   const SizedBox(width: 8),

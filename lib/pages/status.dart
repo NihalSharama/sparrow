@@ -1,3 +1,4 @@
+import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/pop-ups/createStatusPopup.dart';
 import 'package:sparrow/controllers/statusController.dart';
 import 'package:sparrow/controllers/userController.dart';
@@ -122,7 +123,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                       height: 20,
                                       width: 20,
                                       decoration: const BoxDecoration(
-                                        color: Colors.blue,
+                                        color: AppColors.appBarColor,
                                         shape: BoxShape.circle,
                                       ),
                                       child: const Icon(

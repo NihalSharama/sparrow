@@ -1,4 +1,6 @@
 import 'package:sparrow/common/global_variables.dart';
+import 'package:sparrow/components/CustomPopup.dart';
+import 'package:sparrow/components/customButton.dart';
 import 'package:sparrow/components/pop-ups/createStatusPopup.dart';
 import 'package:sparrow/components/status_view.dart';
 import 'package:sparrow/controllers/chatsController.dart';
@@ -6,6 +8,7 @@ import 'package:sparrow/controllers/socketController.dart';
 import 'package:sparrow/controllers/statusController.dart';
 import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/pages/archivedChats.dart';
+import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
 import 'package:sparrow/pages/conversation/chats.dart';
 import 'package:sparrow/pages/usersFromContact.dart';
@@ -25,8 +28,8 @@ import 'package:get/get.dart';
 class LandingScreen extends StatefulWidget {
   static const routeName = '/landing/';
   // ignore: prefer_typing_uninitialized_variables
-  final subRoute;
-  const LandingScreen({super.key, this.subRoute = 'chats'});
+
+  const LandingScreen({super.key});
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -37,6 +40,7 @@ class _LandingScreenState extends State<LandingScreen> {
   final chatsController = Get.put(ChatsController());
   final socketController = Get.put(SocketController());
   final statusController = Get.put(StatusController());
+  int currentIndex = 1;
 
   bool isIncomingCall = false;
 
@@ -102,36 +106,14 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    PageController _pageController = PageController(initialPage: 1);
     return Scaffold(
-      appBar: widget.subRoute == ChatsScreen.routeName
-          ? AppBar(
-              elevation: 1,
-              backgroundColor: const Color(0xfff2f2f2),
-              centerTitle: true,
-              title: const Text('Chats',
-                  style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.titleColor)),
-              leading: const Icon(
-                Icons.chat_bubble,
-                color: Colors.grey,
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, ArchivedChats.routeName),
-                      child: const Icon(
-                        Icons.edit_calendar_outlined,
-                        color: Colors.blue,
-                      )),
-                ),
-              ],
-            )
-          : widget.subRoute == StatusScreen.routeName
-              ? AppBar(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(125),
+          child: Column(
+            children: [
+              if (currentIndex == 0)
+                AppBar(
                   elevation: 1,
                   backgroundColor: const Color(0xfff2f2f2),
                   centerTitle: true,
@@ -157,128 +139,310 @@ class _LandingScreenState extends State<LandingScreen> {
                       icon: const Icon(
                         Icons.add,
                         size: 30,
-                        color: Colors.blue,
+                        color: AppColors.appBarColor,
                       ),
                     ),
                   ],
                 )
-              : null,
-      floatingActionButton: (widget.subRoute == ChatsScreen.routeName
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(
-                    context, '/landing/${ContactUsers.routeName}');
-              },
-              backgroundColor: Colors.blue,
-              child: const Icon(Icons.add),
-            )
-          : null),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+              else if (currentIndex == 1)
+                AppBar(
+                  elevation: 1,
+                  backgroundColor: const Color(0xfff2f2f2),
+                  centerTitle: true,
+                  title: const Text('Chats',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.titleColor)),
+                  leading: const Icon(
+                    Icons.chat_bubble,
+                    color: Colors.grey,
+                  ),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                              context, ArchivedChats.routeName),
+                          child: const Icon(
+                            Icons.edit_calendar_outlined,
+                            color: AppColors.appBarColor,
+                          )),
+                    ),
+                  ],
+                )
+              else if (currentIndex == 2)
+                AppBar(
+                  elevation: 1,
+                  backgroundColor: const Color(0xfff2f2f2),
+                  centerTitle: true,
+                  title: const Text('Call Logs',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.titleColor)),
+                  leading: const Icon(
+                    Icons.data_saver_off_sharp,
+                    color: Colors.grey,
+                  ),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: GestureDetector(
+                          onTap: () {
+                            //clear all logs
+                          },
+                          child: const Icon(
+                            Icons.delete,
+                            color: AppColors.appBarColor,
+                          )),
+                    ),
+                  ],
+                )
+              else if (currentIndex == 3)
+                AppBar(
+                  elevation: 1,
+                  backgroundColor: const Color(0xfff2f2f2),
+                  centerTitle: true,
+                  title: const Text('Settings',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.titleColor)),
+                  leading: const Icon(
+                    Icons.settings,
+                    color: Colors.grey,
+                  ),
+                  actions: [
                     IconButton(
-                        icon: SvgPicture.asset(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CustomPopup(
+                                elements: Column(
+                              children: [
+                                Text(
+                                  'Are you Sure do you want to Logout from the app ? ',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.grey.shade700),
+                                ),
+                                const SizedBox(height: 20),
+                                CustomButton(
+                                  onPressed: () async {
+                                    await userController.logout();
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pushReplacementNamed(
+                                        context, AuthScreen.routeName);
+                                  },
+                                  text: 'Logout',
+                                  color: AppColors.appBarColor,
+                                )
+                              ],
+                            ));
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.exit_to_app,
+                        size: 25,
+                        color: AppColors.appBarColor,
+                      ),
+                    )
+                  ],
+                ),
+              BottomNavigationBar(
+                  selectedItemColor: AppColors.appBarColor,
+                  unselectedItemColor: Colors.grey[500],
+                  currentIndex: currentIndex,
+                  elevation: 0,
+                  onTap: (value) {
+                    currentIndex = value;
+                    _pageController.animateToPage(value,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.linear);
+                    setState(() {});
+                  },
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0),
+                        child: SvgPicture.asset(
                           "assets/icons/status.svg",
                           height: 26,
                           width: 26,
-                          color: (widget.subRoute == 'status'
-                              ? Colors.blue
-                              : Colors.grey),
+                          color: currentIndex == 0
+                              ? AppColors.appBarColor
+                              : Colors.grey[500],
                         ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/landing/${StatusScreen.routeName}');
-                        }),
-                    Text('Status',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: (widget.subRoute == 'status'
-                                ? Colors.blue
-                                : Colors.grey)))
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/icons/chats.svg',
-                        color: (widget.subRoute == 'chats'
-                            ? Colors.blue
-                            : Colors.grey),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                            context, '/landing/${ChatsScreen.routeName}');
-                      },
+                      label: 'Status',
                     ),
-                    Text('Chats',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: (widget.subRoute == 'chats'
-                                ? Colors.blue
-                                : Colors.grey)))
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/icons/calls.svg',
-                          color: (widget.subRoute == 'calls'
-                              ? Colors.blue
-                              : Colors.grey),
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: SvgPicture.asset(
+                          'assets/icons/chats.svg',
+                          color: currentIndex == 1
+                              ? AppColors.appBarColor
+                              : Colors.grey[500],
                         ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/landing/${CallsScreen.routeName}');
-                        }),
-                    Text('Calls',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: (widget.subRoute == 'calls'
-                                ? Colors.blue
-                                : Colors.grey)))
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, '/landing/${SettingPage.routeName}');
-                    },
-                    icon: const Icon(
-                      Icons.more_vert,
-                      size: 35,
-                      color: Color.fromARGB(255, 128, 128, 128),
-                    ))
-              ],
-            ),
-            if (widget.subRoute == ChatsScreen.routeName) ...{
-              const Expanded(child: ChatsScreen())
-            } else if (widget.subRoute == CallsScreen.routeName) ...{
-              const Expanded(child: CallsScreen())
-            } else if (widget.subRoute == StatusScreen.routeName) ...{
-              const Expanded(child: StatusScreen())
-            } else if (widget.subRoute == SettingPage.routeName) ...{
-              const Expanded(child: SettingPage())
-            } else if (widget.subRoute == ContactUsers.routeName) ...{
-              const Expanded(child: ContactUsers())
-            }
-          ],
-        ),
+                      ),
+                      label: 'Chats',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: SvgPicture.asset(
+                          'assets/icons/calls.svg',
+                          color: currentIndex == 2
+                              ? AppColors.appBarColor
+                              : Colors.grey[500],
+                        ),
+                      ),
+                      label: 'Calls',
+                    ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.manage_accounts_rounded,
+                        size: 35,
+                      ),
+                      label: 'Settings',
+                    ),
+                  ])
+            ],
+          )),
+      floatingActionButton: (currentIndex == 1
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, ContactUsers.routeName);
+              },
+              backgroundColor: AppColors.appBarColor,
+              child: const Icon(Icons.add),
+            )
+          : null),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (page) {
+          currentIndex = page;
+          setState(() {});
+        },
+        children: const [
+          // const SizedBox(height: 10),
+          // Row(
+          //   mainAxisSize: MainAxisSize.max,
+          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //   children: [
+          //     Column(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       children: [
+          //         IconButton(
+          //             icon: SvgPicture.asset(
+          //               "assets/icons/status.svg",
+          //               height: 26,
+          //               width: 26,
+          //               color: (widget.subRoute == 'status'
+          //                   ? AppColors.appBarColor
+          //                   : Colors.grey),
+          //             ),
+          //             onPressed: () {
+          //               Navigator.pushReplacementNamed(
+          //                   context, '/landing/${StatusScreen.routeName}');
+          //             }),
+          //         Text('Status',
+          //             style: TextStyle(
+          //                 fontSize: 12,
+          //                 fontWeight: FontWeight.w600,
+          //                 color: (widget.subRoute == 'status'
+          //                     ? AppColors.appBarColor
+          //                     : Colors.grey)))
+          //       ],
+          //     ),
+          //     Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         IconButton(
+          //           icon: SvgPicture.asset(
+          //             'assets/icons/chats.svg',
+          //             color: (widget.subRoute == 'chats'
+          //                 ? AppColors.appBarColor
+          //                 : Colors.grey),
+          //           ),
+          //           onPressed: () {
+          //             Navigator.pushReplacementNamed(
+          //                 context, '/landing/${ChatsScreen.routeName}');
+          //           },
+          //         ),
+          //         Text('Chats',
+          //             style: TextStyle(
+          //                 fontSize: 12,
+          //                 fontWeight: FontWeight.w600,
+          //                 color: (widget.subRoute == 'chats'
+          //                     ? AppColors.appBarColor
+          //                     : Colors.grey)))
+          //       ],
+          //     ),
+          //     // Column(
+          //     //   mainAxisAlignment: MainAxisAlignment.center,
+          //     //   children: [
+          //     //     IconButton(
+          //     //         icon: SvgPicture.asset(
+          //     //           'assets/icons/calls.svg',
+          //     //           color: (widget.subRoute == 'calls'
+          //     //               ? AppColors.appBarColor
+          //     //               : Colors.grey),
+          //     //         ),
+          //     //         onPressed: () {
+          //     //           Navigator.pushReplacementNamed(
+          //     //               context, '/landing/${CallsScreen.routeName}');
+          //     //         }),
+          //     //     Text('Calls',
+          //     //         style: TextStyle(
+          //     //             fontSize: 12,
+          //     //             fontWeight: FontWeight.w600,
+          //     //             color: (widget.subRoute == 'calls'
+          //     //                 ? AppColors.appBarColor
+          //     //                 : Colors.grey)))
+          //     //   ],
+          //     // ),
+          //     Column(
+          //       children: [
+          //         IconButton(
+          //             onPressed: () {
+          //               Navigator.pushReplacementNamed(
+          //                   context, '/landing/${SettingPage.routeName}');
+          //             },
+          //             icon: Icon(
+          //               Icons.manage_accounts_rounded,
+          //               size: 35,
+          //               color: (widget.subRoute == 'setting'
+          //                   ? AppColors.appBarColor
+          //                   : Colors.grey),
+          //             )),
+          //         Text('User',
+          //             style: TextStyle(
+          //                 fontSize: 12,
+          //                 fontWeight: FontWeight.w600,
+          //                 color: (widget.subRoute == 'setting'
+          //                     ? AppColors.appBarColor
+          //                     : Colors.grey)))
+          //       ],
+          //     )
+          //   ],
+          // ),
+          StatusScreen(),
+          ChatsScreen(),
+          CallsScreen(),
+          SettingPage(),
+          // if (widget.subRoute == ChatsScreen.routeName) ...{
+          //   const Expanded(child: ChatsScreen())
+          // } else if (widget.subRoute == CallsScreen.routeName) ...{
+          //   const Expanded(child: CallsScreen())
+          // } else if (widget.subRoute == StatusScreen.routeName) ...{
+          //   const Expanded(child: StatusScreen())
+          // } else if (widget.subRoute == SettingPage.routeName) ...{
+          // } else
+        ],
       ),
     );
   }

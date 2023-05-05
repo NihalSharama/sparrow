@@ -1,3 +1,4 @@
+import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/CustomPopup.dart';
 import 'package:sparrow/components/settingWidget.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,11 @@ class AccountPage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(
-                context, LandingScreen.routeName + SettingPage.routeName);
+            Navigator.pop(context);
           },
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
         title: const Text(

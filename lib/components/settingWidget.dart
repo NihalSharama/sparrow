@@ -192,7 +192,7 @@ class NormalTextSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap,
+      onTap: onTap,
       child: Container(
         color: Colors.white,
         width: double.infinity,

@@ -1,3 +1,4 @@
+import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/settingWidget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,12 +18,12 @@ class _NotificationPageState extends State<NotificationPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
-        title: Text(
+        title: const Text(
           "Notification",
           style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),

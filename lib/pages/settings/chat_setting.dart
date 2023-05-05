@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/settingWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:sparrow/controllers/chatsController.dart';
+import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/utils/basicapp-utils.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 
 class ChatSetting extends StatefulWidget {
@@ -14,6 +19,7 @@ class ChatSetting extends StatefulWidget {
 
 class _ChatSettingState extends State<ChatSetting> {
   final chatsController = Get.put(ChatsController());
+  final userController = Get.put(UserController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +30,7 @@ class _ChatSettingState extends State<ChatSetting> {
           },
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
         title: const Text(
@@ -42,7 +48,20 @@ class _ChatSettingState extends State<ChatSetting> {
           const SizedBox(
             height: 30,
           ),
-          const SettingWidget2(title: "Change Wallpaper"),
+          SettingWidget2(
+            title: "Change Wallpaper",
+            onTap: () {
+              BasicAppUtils().onChangeBackgroundImage();
+            },
+          ),
+          if (userController.bgImage.value != '')
+            SettingWidget2(
+              title: "Remove Wallpaper",
+              onTap: () {
+                BasicAppUtils().onDeleteBackgroundImage(
+                    File(userController.bgImage.value));
+              },
+            ),
           const SizedBox(
             height: 20,
           ),
@@ -63,9 +82,16 @@ class _ChatSettingState extends State<ChatSetting> {
           // ),
           NormalTextSetting(
             title: "Archive All Chats",
-            color: Colors.blue,
-            onTap: () {},
+            color: AppColors.appBarColor,
+            onTap: () {
+              for (var chat in chatsController.chats.value) {
+                print('archive');
+                chatsController.onArchiveUnacrchiveMsg(
+                    chat, chat['conv_name'] != null, userController.user['id']);
+              }
+            },
           ),
+
           Container(
             color: Colors.white,
             child: const Divider(
@@ -84,7 +110,7 @@ class _ChatSettingState extends State<ChatSetting> {
                 backgroundColor: Colors.orange,
               );
               for (var chat in chatsController.chats.value) {
-                if (chat['conv_mobile'] != null) {
+                if (chat['conv_name'] != null) {
                   chatsController.deleteConversation(chat['id'].toString());
                 } else {
                   chatsController.deleteGroup(chat['id'].toString());

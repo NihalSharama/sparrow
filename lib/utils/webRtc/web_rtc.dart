@@ -88,7 +88,7 @@ class WebRtc {
           'candidate': e.candidate.toString(),
           'sdpMid': e.sdpMid.toString(),
           'sdpMlineIndex': e.sdpMLineIndex,
-          "receiver": recv_id
+          "receivers": [recv_id]
         });
       }
       ;
@@ -104,7 +104,7 @@ class WebRtc {
 
     var data = {
       "type": "rtc.remote",
-      "receiver": recv_id,
+      "receivers": [recv_id],
       "isVideoEnabled": false
     };
 
@@ -118,7 +118,7 @@ class WebRtc {
 
     var data = {
       "type": "rtc.remote",
-      "receiver": recv_id,
+      "receivers": [recv_id],
       "isVideoEnabled": true
     };
 
@@ -159,7 +159,7 @@ class WebRtc {
 
       var data_ = {
         "type": "answer",
-        "receiver": recv_id,
+        "receivers": [recv_id],
         "sdp": answerSession,
       };
       sendData(data_);
@@ -198,7 +198,7 @@ class WebRtc {
     var data = {
       "type": "rtc.offer",
       "sdp": session,
-      "receiver": recv_id,
+      "receivers": [recv_id],
       "caller_mobile": callerInfo['mobile'].toString(),
       "audioCall": isAudioCall
     };
@@ -209,7 +209,8 @@ class WebRtc {
       FirebaseServices().sendPushNotification(
           receiverMobile,
           'notification.call',
-          callerInfo['mobile'].toString(),
+          'Sparrow',
+          'Incomming ${isAudioCall ? 'Audio' : 'Video'} Call...',
           {'audioCall': isAudioCall});
     } catch (_) {}
   }
@@ -234,7 +235,10 @@ class WebRtc {
   }
 
   void hangUp(callback) async {
-    sendData({"type": "rtc.hangup", "receiver": recv_id});
+    sendData({
+      "type": "rtc.hangup",
+      "receivers": [recv_id]
+    });
     localVideoRenderer.srcObject = null;
     remoteVideoRenderer.srcObject = null;
 

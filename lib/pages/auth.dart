@@ -30,26 +30,26 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   initState() {
-    // CacheStorage().removeAuthCards();
-    // userController.user.value = {};
-    Future.delayed(Duration.zero, () async {
-      final authCards = await CacheStorage().getAuthCards();
+    // // CacheStorage().removeAuthCards();
+    // // userController.user.value = {};
+    // Future.delayed(Duration.zero, () async {
+    //   final authCards = await CacheStorage().getAuthCards();
 
-      bool invalidCreds;
-      try {
-        invalidCreds = (authCards['refresh'].toString() ==
-                '[This field may not be null.]' ||
-            authCards['token'].toString() == '[This field may not be null.]');
-      } catch (_) {
-        invalidCreds = (authCards == null || authCards.isEmpty);
-      }
+    //   bool invalidCreds;
+    //   try {
+    //     invalidCreds = (authCards['refresh'].toString() ==
+    //             '[This field may not be null.]' ||
+    //         authCards['token'].toString() == '[This field may not be null.]');
+    //   } catch (_) {
+    //     invalidCreds = (authCards == null || authCards.isEmpty);
+    //   }
 
-      if (!invalidCreds) {
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacementNamed(
-            context, LandingScreen.routeName + ChatsScreen.routeName);
-      }
-    });
+    //   if (!invalidCreds) {
+    //     // ignore: use_build_context_synchronously
+    //     Navigator.pushReplacementNamed(
+    //         context, LandingScreen.routeName + ChatsScreen.routeName);
+    //   }
+    // });
     super.initState();
   }
 
@@ -63,7 +63,7 @@ class _AuthScreenState extends State<AuthScreen> {
             title: Text((isRegister ? "Let's Get Started !" : "Welcome Back !"),
                 style: const TextStyle(
                     fontSize: 17,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600)),
           ),
           body: SingleChildScrollView(
@@ -195,7 +195,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               const Text("India",
                                   style: TextStyle(
                                       fontSize: 17,
-                                      color: Colors.blue,
+                                      color: AppColors.appBarColor,
                                       fontWeight: FontWeight.w600)),
                               SvgPicture.asset("assets/icons/Sharp.svg")
                             ],
@@ -284,7 +284,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     : 'Dont have account? Register'),
                                 style: const TextStyle(
                                   fontSize: 15,
-                                  color: Colors.blue,
+                                  color: AppColors.appBarColor,
                                 ),
                               ),
                             ),

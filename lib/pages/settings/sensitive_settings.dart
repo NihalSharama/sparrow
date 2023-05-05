@@ -184,7 +184,7 @@ class _SensitiveSettingsState extends State<SensitiveSettings> {
                               const Text("India",
                                   style: TextStyle(
                                       fontSize: 17,
-                                      color: Colors.blue,
+                                      color: AppColors.appBarColor,
                                       fontWeight: FontWeight.w600)),
                               SvgPicture.asset("assets/icons/Sharp.svg")
                             ],

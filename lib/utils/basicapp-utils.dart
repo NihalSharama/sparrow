@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sparrow/controllers/basicAppController.dart';
@@ -56,5 +57,39 @@ class BasicAppUtils {
   Future<void> stopIncommingCallRing() async {
     basicAppController.player.setReleaseMode(ReleaseMode.stop);
     await basicAppController.player.pause();
+  }
+
+  onChangeBackgroundImage() async {
+    try {
+      final XFile? file =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (file == null) {
+        toasterFailureMsg('Failed To Pick Image');
+        return;
+      }
+
+      final dir = await getApplicationDocumentsDirectory();
+      final String path = dir.path;
+
+      // copy the file to a new path
+      await file.saveTo('$path/sparrow_chat_background.png');
+
+      toasterSuccessMsg('Restart App To See Changes');
+    } catch (e) {
+      toasterFailureMsg('Failed To Change Wallpaper');
+    }
+  }
+
+  onDeleteBackgroundImage(File file) async {
+    try {
+      if (await file.exists()) {
+        await file.delete();
+      }
+
+      toasterSuccessMsg('Restart App To See Changes');
+    } catch (e) {
+      toasterFailureMsg('Failed To Delete Wallpaper');
+    }
   }
 }

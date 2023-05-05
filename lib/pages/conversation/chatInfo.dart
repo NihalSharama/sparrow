@@ -137,7 +137,7 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
           },
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
         title: const Text(
@@ -190,8 +190,8 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: [
-                                              const Text(
+                                            children: const [
+                                              Text(
                                                 "Pick From Gallery",
                                                 style: TextStyle(
                                                     color: AppColors
@@ -199,10 +199,11 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              const SizedBox(width: 10),
+                                              SizedBox(width: 10),
                                               Icon(
                                                 Icons.photo,
-                                                color: Colors.blue.shade300,
+                                                color: Color.fromARGB(
+                                                    255, 133, 125, 190),
                                               )
                                             ],
                                           ),
@@ -249,7 +250,7 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                             },
                             icon: const Icon(
                               Icons.edit,
-                              color: Colors.blue,
+                              color: AppColors.appBarColor,
                               size: 16,
                             )),
                       ),
@@ -340,7 +341,8 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                                   child: const Text(
                                     'Change',
                                     style: TextStyle(
-                                        color: Colors.blue, fontSize: 14),
+                                        color: AppColors.appBarColor,
+                                        fontSize: 14),
                                   ),
                                 )
                             ],
@@ -471,7 +473,7 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                                     child: const Text(
                                       '(Add users)',
                                       style: TextStyle(
-                                          color: Colors.blue,
+                                          color: AppColors.appBarColor,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400),
                                     ),
@@ -514,8 +516,8 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                                             )
                                           : const Text(
                                               "(User)",
-                                              style:
-                                                  TextStyle(color: Colors.blue),
+                                              style: TextStyle(
+                                                  color: AppColors.appBarColor),
                                             ),
                                       trailing:
                                           (chatsController.chatRoomDetails

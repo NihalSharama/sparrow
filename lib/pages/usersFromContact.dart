@@ -72,6 +72,25 @@ class _ContactUsersState extends State<ContactUsers> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 1,
+        backgroundColor: const Color(0xfff2f2f2),
+        centerTitle: true,
+        title: const Text('Contacts',
+            style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.w500,
+                color: AppColors.titleColor)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.appBarColor,
+          ),
+        ),
+      ),
       floatingActionButton: isCreatingGroup
           ? Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -119,54 +138,56 @@ class _ContactUsersState extends State<ContactUsers> {
                 });
                 toasterSuccessMsg('Tap on contacts you want to add');
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.appBarColor,
               child: const Icon(Icons.create),
             ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: AppColors.backgroundGrayMoreLight,
-              child: ListTile(
-                leading: const Icon(Icons.search),
-                title: TextField(
-                  controller: searchContactsController,
-                  decoration: const InputDecoration(
-                      hintText: 'Search', border: InputBorder.none),
-                  onChanged: onSearchFromContact,
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.cancel),
-                  onPressed: () {
-                    searchContactsController.clear();
-                    onSearchFromContact('');
-                  },
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: AppColors.backgroundGrayMoreLight,
+                child: ListTile(
+                  leading: const Icon(Icons.search),
+                  title: TextField(
+                    controller: searchContactsController,
+                    decoration: const InputDecoration(
+                        hintText: 'Search', border: InputBorder.none),
+                    onChanged: onSearchFromContact,
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.cancel),
+                    onPressed: () {
+                      searchContactsController.clear();
+                      onSearchFromContact('');
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-              child: ListView.builder(
-            itemCount: searchResults.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ContactChatCardComponent(
-                contactUser: searchResults[index],
-                isCreatingGroup: isCreatingGroup,
-                isSelected: (bool value) {
-                  if (value) {
-                    callsController.selectedGroupContacts
-                        .add(searchResults[index]['mobile']);
-                  } else {
-                    callsController.selectedGroupContacts
-                        .remove(searchResults[index]['mobile']);
-                  }
-                  print("$index : $value");
-                },
-              );
-            },
-          )),
-        ],
+            Expanded(
+                child: ListView.builder(
+              itemCount: searchResults.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ContactChatCardComponent(
+                  contactUser: searchResults[index],
+                  isCreatingGroup: isCreatingGroup,
+                  isSelected: (bool value) {
+                    if (value) {
+                      callsController.selectedGroupContacts
+                          .add(searchResults[index]['mobile']);
+                    } else {
+                      callsController.selectedGroupContacts
+                          .remove(searchResults[index]['mobile']);
+                    }
+                    print("$index : $value");
+                  },
+                );
+              },
+            )),
+          ],
+        ),
       ),
     );
   }

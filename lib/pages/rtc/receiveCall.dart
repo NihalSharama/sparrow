@@ -64,7 +64,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
 
     setState((() => {loadedWebRtc = true}));
 
-    // var eventData = json.encode({"type": "offer", "receiver": recv_id});
+    // var eventData = json.encode({"type": "offer", "receivers": [recv_id]});
     // ws_.send(eventData);
   }
 
@@ -154,7 +154,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
     // Sending Answer
     var data_ = {
       "type": "rtc.answer",
-      "receiver": data['mobile'],
+      "receivers": [data['mobile']],
       "sdp": answerSession,
     };
 
@@ -182,7 +182,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
     print("sending reject");
     var data_ = {
       "type": "rtc.reject",
-      "receiver": data!['mobile'],
+      "receivers": [data!['mobile']],
     };
 
     webrtc.sendData(data_);
@@ -307,11 +307,11 @@ class _ReceiveCallState extends State<ReceiveCall> {
             ),
             Container(
               decoration: const BoxDecoration(
-                  color: Color.fromARGB(235, 50, 216, 133),
+                  color: Color.fromARGB(255, 117, 147, 231),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 10,
               ),
               child: Row(

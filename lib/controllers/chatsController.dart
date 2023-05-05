@@ -4,8 +4,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sparrow/pages/settings/starredMessage.dart';
 import 'package:sparrow/services/chat-services.dart';
+import 'package:sparrow/utils/basicapp-utils.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 import 'package:sparrow/utils/user-contacts.dart';
@@ -24,6 +26,7 @@ class ChatsController extends GetxController {
   var isSelectedFileImage = false.obs;
   var allStarredMessages = [].obs;
   var archivedChats = [].obs;
+
   // ignore: prefer_typing_uninitialized_variables
 
   // calling page
@@ -168,15 +171,20 @@ class ChatsController extends GetxController {
 
   Future<Map> onSendChatMsg(String fromMobile) async {
     try {
+      if (inputMsg.value.text == '') {
+        return {};
+      }
+
       final msgSentRes = await ChatServices().sendChatMsg(
           chatRoomDetails.value['receiver_info']['mobile'].toString(),
-          inputMsg.value.text == '' ? ' ' : inputMsg.value.text,
+          inputMsg.value.text,
           (selectedFilePath.value.isEmpty
               ? (replyMessage.value.isEmpty)
                   ? null
                   : json.encode({
                       "reply_type": "reply.chat",
-                      "reply_message": replyMessage['message'],
+                      "reply_message":
+                          BasicAppUtils().utf8convert(replyMessage['message']),
                       "replyTo_id": replyMessage['id'],
                       "replyTo_user": replyMessage['sender'],
                     })
@@ -206,7 +214,7 @@ class ChatsController extends GetxController {
         'sender': msgSentRes['data']['sender'],
         'sender_id': msgSentRes['data']['sender_id'],
         'senderMobile': fromMobile,
-        'message': inputMsg.value.text == '' ? ' ' : inputMsg.value.text,
+        'message': inputMsg.value.text,
         'created_at': msgSentRes['data']['created_at'],
         'status': msgSentRes['data']['status'],
         'isStarred': msgSentRes['data']['isStarred'],
@@ -242,11 +250,14 @@ class ChatsController extends GetxController {
 
   Future<Map> onSendGroupChat(String fromMobile) async {
     try {
+      if (inputMsg.value.text == '') {
+        return {};
+      }
       var replyToName =
           await getUserNameFromMobile(replyMessage['sender'].toString());
       final msgSentRes = await ChatServices().sendGroupChatMsg(
           chatRoomDetails.value['users'],
-          inputMsg.value.text == '' ? ' ' : inputMsg.value.text,
+          inputMsg.value.text,
           chatRoomDetails.value['id'].toString(),
           (selectedFilePath.value.isEmpty
               ? (replyMessage.value.isEmpty)
@@ -287,7 +298,7 @@ class ChatsController extends GetxController {
         'sender': msgSentRes['data']['sender'],
         'sender_id': msgSentRes['data']['sender_id'],
         'senderMobile': fromMobile,
-        'message': inputMsg.value.text == '' ? ' ' : inputMsg.value.text,
+        'message': inputMsg.value.text,
         'created_at': msgSentRes['data']['created_at'],
         'status': msgSentRes['data']['status'],
         'isStarred': msgSentRes['data']['isStarred'],

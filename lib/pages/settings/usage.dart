@@ -1,3 +1,4 @@
+import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/settingWidget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,12 +18,12 @@ class _UsageState extends State<Usage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
-        title: Text(
+        title: const Text(
           "Data and Storage Usage",
           style: TextStyle(
               color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600),

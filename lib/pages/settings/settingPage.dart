@@ -1,21 +1,14 @@
-import 'package:sparrow/components/customButton.dart';
-import 'package:sparrow/components/settingWidget.dart';
-import 'package:sparrow/controllers/userController.dart';
-import 'package:sparrow/pages/auth.dart';
-import 'package:sparrow/pages/conversation/chats.dart';
-import 'package:sparrow/pages/landing.dart';
-import 'package:sparrow/pages/settings/Account.dart';
-import 'package:sparrow/pages/settings/allStarred_messages.dart';
-import 'package:sparrow/pages/settings/edit_profile.dart';
-import 'package:sparrow/pages/settings/usage.dart';
-import 'package:sparrow/pages/settings/starredMessage.dart';
-import 'package:sparrow/utils/cache-manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:sparrow/components/settingWidget.dart';
+import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/pages/settings/Account.dart';
+import 'package:sparrow/pages/settings/allStarred_messages.dart';
+import 'package:sparrow/pages/settings/edit_profile.dart';
 
 import '../../common/global_variables.dart';
-import 'Notification.dart';
 import 'chat_setting.dart';
 
 class SettingPage extends StatelessWidget {
@@ -29,26 +22,6 @@ class SettingPage extends StatelessWidget {
 
     return Obx(
       () => Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Settings",
-            style: TextStyle(
-                color: Colors.black, fontSize: 17, fontWeight: FontWeight.w600),
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(
-                  context, LandingScreen.routeName + ChatsScreen.routeName);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.blue,
-            ),
-          ),
-          backgroundColor: AppColors.settingPageColor,
-          centerTitle: true,
-          elevation: 0,
-        ),
         backgroundColor: Color.fromARGB(236, 239, 239, 244),
         body: SingleChildScrollView(
           child:
@@ -128,7 +101,7 @@ class SettingPage extends StatelessWidget {
             ),
             SettingWidget(
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const AccountPage()));
@@ -211,24 +184,15 @@ class SettingPage extends StatelessWidget {
                 ),
               ),
             ),
-            SettingWidget(
-              onTap: () {},
-              svg: "assets/icons/tellFriend.svg",
-              title: "Tell a Friend",
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomButton(
-                  text: 'Logout',
-                  onPressed: () async {
-                    await CacheStorage().removeAuthCards();
-                    Navigator.pushReplacementNamed(
-                        context, AuthScreen.routeName);
-                  }),
-            )
+            // SettingWidget(
+            //   onTap: () async {
+            //     if (dotenv.env['APP_PLAYSTORE_URL'] != null) {
+            //       await Share.share(dotenv.env['APP_PLAYSTORE_URL']!);
+            //     }
+            //   },
+            //   svg: "assets/icons/tellFriend.svg",
+            //   title: "Tell a Friend",
+            // ),
           ]),
         ),
       ),

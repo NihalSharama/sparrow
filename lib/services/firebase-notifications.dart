@@ -47,8 +47,15 @@ class FirebaseServices {
         .set({'token': token});
   }
 
-  sendPushNotification(String mobile, String notificationType, String sender,
-      Map context) async {
+  removeTokenFromFirebase() async {
+    await FirebaseFirestore.instance
+        .collection("UserTokens")
+        .doc(userController.user['mobile'].toString())
+        .delete();
+  }
+
+  sendPushNotification(String mobile, String notificationType, String title,
+      String body, Map context) async {
     try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('UserTokens')
@@ -77,10 +84,8 @@ class FirebaseServices {
                 'notification': {
                   'android_channel_id':
                       'message notification', // there maybe phone number of reciever (for mute functionality)
-                  'title': 'Sparrow',
-                  'body': notificationType == 'notification.call'
-                      ? 'Incomming ${context['audioCall'] ? 'Audio' : 'Video'} Call...'
-                      : 'New Message Received',
+                  'title': title,
+                  'body': body,
                 },
                 'to': token
               }));

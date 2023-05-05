@@ -40,8 +40,8 @@ class _ExitEditingProfilePopupState extends State<ExitEditingProfilePopup> {
             padding: const EdgeInsets.all(6.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(
-                    context, LandingScreen.routeName + SettingPage.routeName);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -75,9 +75,8 @@ class _ExitEditingProfilePopupState extends State<ExitEditingProfilePopup> {
                 onTap: () async {
                   await userController.updateUserProfile(widget.editNameFormKey,
                       widget.editEmailFormKey, widget.editBioFormKey);
-
-                  Navigator.pushNamed(
-                      context, LandingScreen.routeName + SettingPage.routeName);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

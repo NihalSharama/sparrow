@@ -17,7 +17,9 @@ import 'package:sparrow/pages/conversation/chatRoom.dart';
 import 'package:sparrow/pages/conversation/groupChatRoom.dart';
 import 'package:sparrow/pages/landing.dart';
 import 'package:sparrow/pages/rtc/receiveCall.dart';
+import 'package:sparrow/pages/rtc/receiveMeeting.dart';
 import 'package:sparrow/router.dart';
+import 'package:sparrow/introScreen.dart';
 import 'package:sparrow/utils/basicapp-utils.dart';
 import 'package:sparrow/utils/notification-api.dart';
 import 'package:sparrow/utils/webRtc/websocket.dart';
@@ -33,6 +35,10 @@ class NavigationService {
       return navigatorKey.currentState!.push(MaterialPageRoute(builder: (_) {
         return ReceiveCall(audioCall: false, offer_data: data);
       }));
+    } else if (route == ReceiveMeetingScreen.routeName) {
+      return navigatorKey.currentState!.push(MaterialPageRoute(builder: (_) {
+        return ReceiveMeetingScreen(meetingDetails: data);
+      }));
     } else if (route == ChatRoomScreen.routeName) {
       return navigatorKey.currentState!.push(MaterialPageRoute(builder: (_) {
         return ChatRoomScreen(id: data['id']);
@@ -43,7 +49,7 @@ class NavigationService {
       }));
     } else {
       return navigatorKey.currentState!.push(MaterialPageRoute(builder: (_) {
-        return const LandingScreen(subRoute: 'chats');
+        return const LandingScreen();
       }));
     }
   }
@@ -123,6 +129,11 @@ class _MyAppState extends State<MyApp> {
       _navigationService.navigateTo(data, ReceiveCall.routeName);
     };
 
+    signallingWs.eventHandlers["group.meeting"] = (data) async {
+      print(data);
+      _navigationService.navigateTo(data, ReceiveMeetingScreen.routeName);
+    };
+
     super.initState();
   }
 
@@ -133,7 +144,7 @@ class _MyAppState extends State<MyApp> {
         title: "Let's Talk",
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
         onGenerateRoute: (settings) => genarateRoute(settings),
-        home: const AuthScreen(),
+        home: const IntroScreen(),
         navigatorKey: locator<NavigationService>().navigatorKey);
   }
 }

@@ -40,7 +40,7 @@ class StarredMessage extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               elevation: 0,
-              backgroundColor: const Color.fromRGBO(11, 114, 102, 1),
+              backgroundColor: AppColors.appBarColor,
               centerTitle: true,
             ),
             body: Column(

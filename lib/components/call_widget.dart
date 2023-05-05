@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class CallWidget extends StatelessWidget {
   final String avatar;
@@ -71,14 +69,13 @@ class CallWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    DateFormat('dd/ MM/ yy  ').format(DateTime.now()),
+                    DateFormat('h:mma  ').format(DateTime.now()),
                     style: const TextStyle(
                         fontSize: 10, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  SvgPicture.asset("assets/icons/info.svg")
                 ],
               ),
             ],

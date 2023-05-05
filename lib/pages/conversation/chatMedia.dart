@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:sparrow/common/global_variables.dart';
 
 class ChatMedia extends StatefulWidget {
   const ChatMedia({super.key});
@@ -20,7 +21,7 @@ class _ChatMediaState extends State<ChatMedia> {
           },
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.blue,
+            color: AppColors.appBarColor,
           ),
         ),
         title: const Text(

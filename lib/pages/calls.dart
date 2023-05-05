@@ -22,23 +22,6 @@ class _CallsScreenState extends State<CallsScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SvgPicture.asset("assets/icons/add_call.svg"),
-                const Text(
-                  "Clear All Logs",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromARGB(255, 64, 64, 64)),
-                ),
-                const Icon(Icons.search)
-              ],
-            ),
-          ),
           Expanded(
             child: FutureBuilder(
                 future: callsController.getCalls(),

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // COLORS
-  static const appBarColor = Color.fromRGBO(11, 114, 102, 1);
+  // static const appBarColor = Color.fromRGBO(138, 58, 127, 1);
+  static const appBarColor = Color.fromRGBO(88, 77, 155, 1);
   static const titleColorLite = Color.fromARGB(255, 175, 175, 179);
   static const mainColor = Color.fromRGBO(35, 127, 213, 1);
   static const mainColorlite = Color.fromARGB(175, 35, 127, 213);
+  static const myMsgCardColor = Color.fromRGBO(88, 77, 155, 1);
+  static const thereMsgCardColor = Color.fromRGBO(104, 94, 168, 1);
 
   static const backgroundColor = Colors.white;
   static const titleColor = Color.fromRGBO(54, 54, 54, 1);
@@ -17,7 +20,7 @@ class AppColors {
   static const descriptionColorLight = Color.fromRGBO(126, 126, 126, 1);
   static const descriptionColorExtraLight = Color.fromARGB(255, 179, 179, 179);
   static const descriptionColorDark = Color.fromRGBO(94, 94, 94, 1);
-  static const curveColor = Color.fromRGBO(35, 127, 213, 1);
+  static const curveColor = Color.fromRGBO(35, 127, 213, 0);
   static const curveColorlight = Color.fromRGBO(35, 127, 213, 0.5);
   static const backgrundGray = Color.fromRGBO(123, 123, 123, 1);
   static const backgroundGrayExtraLight = Color.fromARGB(103, 204, 204, 204);
