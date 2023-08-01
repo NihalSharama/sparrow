@@ -43,8 +43,6 @@ class SocketController extends GetxController {
     // Connecting
     ws.connect();
 
-    print('connected');
-
     // Adding Event Handlers
     ws.onMessage = (data) {
       String? eventType = data["type"];

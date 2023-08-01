@@ -171,7 +171,7 @@ class ChatsController extends GetxController {
 
   Future<Map> onSendChatMsg(String fromMobile) async {
     try {
-      if (inputMsg.value.text == '') {
+      if (inputMsg.value.text.isEmpty || inputMsg.value.text == ' ') {
         return {};
       }
 
@@ -250,7 +250,7 @@ class ChatsController extends GetxController {
 
   Future<Map> onSendGroupChat(String fromMobile) async {
     try {
-      if (inputMsg.value.text == '') {
+      if (inputMsg.value.text.isEmpty || inputMsg.value.text == ' ') {
         return {};
       }
       var replyToName =

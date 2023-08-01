@@ -7,6 +7,7 @@ import 'package:sdp_transform/sdp_transform.dart';
 import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/controllers/chatsController.dart';
 import 'package:sparrow/controllers/socketController.dart';
+import 'package:sparrow/controllers/userController.dart';
 import 'package:sparrow/utils/basicapp-utils.dart';
 import 'package:sparrow/utils/webRtc/web_rtc.dart';
 import 'package:sparrow/utils/webRtc/websocket.dart';
@@ -24,6 +25,7 @@ class ReceiveCall extends StatefulWidget {
 class _ReceiveCallState extends State<ReceiveCall> {
   final socketController = Get.put(SocketController());
   final chatsController = Get.put(ChatsController());
+  final userController = Get.put(UserController());
   final receiverIdController = TextEditingController();
   late RTCPeerConnection _peerConnection;
   late WebRtc webrtc;
@@ -96,6 +98,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
       _peerConnection.close();
       // _peerConnection.dispose();
       await webrtc.destroy();
+      userController.currentCall.value = '';
       Navigator.of(context).pop();
     };
   }
@@ -131,6 +134,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
       _peerConnection.close();
       // _peerConnection.dispose();
       await webrtc.destroy();
+      userController.currentCall.value = '';
       Navigator.of(context).pop();
     };
 
@@ -184,7 +188,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
       "type": "rtc.reject",
       "receivers": [data!['mobile']],
     };
-
+    userController.currentCall.value = '';
     webrtc.sendData(data_);
     Navigator.pop(context);
   }
@@ -267,12 +271,12 @@ class _ReceiveCallState extends State<ReceiveCall> {
                           Text(callerInfo['name'],
                               style: const TextStyle(
                                   fontSize: 24, color: AppColors.titleColor)),
-                          const SizedBox(height: 6),
-                          const Text(
-                            '00:00',
-                            style: TextStyle(
-                                fontSize: 18, color: AppColors.titleColorLight),
-                          ),
+                          // const SizedBox(height: 6),
+                          // const Text(
+                          //   '00:00',
+                          //   style: TextStyle(
+                          //       fontSize: 18, color: AppColors.titleColorLight),
+                          // ),
                         ],
                       ),
                     ),
@@ -372,6 +376,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
                       )),
                   IconButton(
                       onPressed: () {
+                        userController.currentCall.value = '';
                         webrtc.hangUp(() {
                           Navigator.of(context).pop();
                           _peerConnection.close();

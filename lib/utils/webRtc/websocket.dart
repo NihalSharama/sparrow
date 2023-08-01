@@ -37,6 +37,7 @@ class SimpleWebSocket {
         // onClose?.call(_socket.closeCode, _socket.closeReason);
         onClose?.call();
       });
+      print('connected');
     } catch (e) {
       // onClose?.call(500, e.toString());
       onClose?.call();

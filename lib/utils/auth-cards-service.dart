@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 
 Future<bool> featchTokenIfExpired(Map mapRes) async {
@@ -13,6 +15,8 @@ Future<bool> featchTokenIfExpired(Map mapRes) async {
 
       if (isRefreshExp) {
         // move to login
+        // ignore: use_build_context_synchronously
+
         CacheStorage().removeAuthCards();
       }
 

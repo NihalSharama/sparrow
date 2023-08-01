@@ -1,4 +1,5 @@
 // import 'dart:html';
+import "dart:async";
 import "dart:convert";
 import "package:sparrow/services/firebase-notifications.dart";
 import "package:sparrow/utils/cache-manager.dart";
@@ -22,6 +23,7 @@ class WebRtc {
   Function(MediaStream stream)? onLocalStream;
 
   bool micMute = false;
+
   WebRtc(this.ws, this.recv_id);
 
   Map<String, Function> eventHandlers = {};
@@ -183,7 +185,7 @@ class WebRtc {
     };
   }
 
-  Future<void> createOffer(
+  Future<Map<String, dynamic>> createOffer(
       RTCPeerConnection pc, bool isAudioCall, String receiverMobile) async {
     final authCards = await CacheStorage().getAuthCards();
     var callerInfo = authCards['user'];
@@ -203,16 +205,7 @@ class WebRtc {
       "audioCall": isAudioCall
     };
 
-    sendData(data);
-
-    try {
-      FirebaseServices().sendPushNotification(
-          receiverMobile,
-          'notification.call',
-          'Sparrow',
-          'Incomming ${isAudioCall ? 'Audio' : 'Video'} Call...',
-          {'audioCall': isAudioCall});
-    } catch (_) {}
+    return data;
   }
 
   Future<Map<String, dynamic>> createAnswer(RTCPeerConnection pc) async {

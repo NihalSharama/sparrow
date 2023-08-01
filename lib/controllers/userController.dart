@@ -33,6 +33,7 @@ class UserController extends GetxController {
   var showOtp = false.obs;
   var otp = ''.obs;
   var bgImage = ''.obs;
+  var currentCall = ''.obs;
 
   updateUserProfile(
       GlobalKey<FormState> editNameFormKey,

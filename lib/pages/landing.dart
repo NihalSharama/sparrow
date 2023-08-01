@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
+// import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/components/CustomPopup.dart';
 import 'package:sparrow/components/customButton.dart';
 import 'package:sparrow/components/pop-ups/createStatusPopup.dart';
-import 'package:sparrow/components/status_view.dart';
+import 'package:sparrow/controllers/callsController.dart';
 import 'package:sparrow/controllers/chatsController.dart';
 import 'package:sparrow/controllers/socketController.dart';
 import 'package:sparrow/controllers/statusController.dart';
@@ -11,19 +15,15 @@ import 'package:sparrow/pages/archivedChats.dart';
 import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/calls.dart';
 import 'package:sparrow/pages/conversation/chats.dart';
-import 'package:sparrow/pages/usersFromContact.dart';
 import 'package:sparrow/pages/settings/settingPage.dart';
 import 'package:sparrow/pages/status.dart';
+import 'package:sparrow/pages/usersFromContact.dart';
+import 'package:sparrow/services/call-service.dart';
 import 'package:sparrow/services/firebase-notifications.dart';
 import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/notification-api.dart';
 import 'package:sparrow/utils/user-contacts.dart';
 import 'package:sparrow/utils/webRtc/websocket.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-// import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
 class LandingScreen extends StatefulWidget {
   static const routeName = '/landing/';
@@ -40,6 +40,7 @@ class _LandingScreenState extends State<LandingScreen> {
   final chatsController = Get.put(ChatsController());
   final socketController = Get.put(SocketController());
   final statusController = Get.put(StatusController());
+  final callsController = Get.put(CallsController());
   int currentIndex = 1;
 
   bool isIncomingCall = false;
@@ -190,7 +191,34 @@ class _LandingScreenState extends State<LandingScreen> {
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
                           onTap: () {
-                            //clear all logs
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CustomPopup(
+                                    elements: Column(
+                                  children: [
+                                    Text(
+                                      'Are you sure do you want to clear all call logs ? ',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.grey.shade700),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    CustomButton(
+                                      onPressed: () async {
+                                        CallServices().removeAllCallLogs();
+
+                                        callsController.calls.clear();
+
+                                        Navigator.pop(context);
+                                      },
+                                      text: 'Clear Logs',
+                                      color: AppColors.appBarColor,
+                                    )
+                                  ],
+                                ));
+                              },
+                            );
                           },
                           child: const Icon(
                             Icons.delete,
@@ -321,6 +349,40 @@ class _LandingScreenState extends State<LandingScreen> {
               child: const Icon(Icons.add),
             )
           : null),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: () {},
+                child: SvgPicture.asset(
+                  'assets/icons/arrow-up.svg',
+                ),
+              ),
+              label: ''),
+          BottomNavigationBarItem(
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/reels');
+              },
+              child: SvgPicture.asset(
+                'assets/icons/play.svg',
+              ),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/explore');
+                },
+                child: SvgPicture.asset(
+                  'assets/icons/explore.svg',
+                  width: 100,
+                ),
+              ),
+              label: ''),
+        ],
+      ),
       body: PageView(
         controller: _pageController,
         onPageChanged: (page) {

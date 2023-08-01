@@ -41,7 +41,9 @@ class GroupMsgCardComponent extends StatelessWidget {
     final userController = Get.put(UserController());
     final chatsController = Get.put(ChatsController());
     final socketController = Get.put(SocketController());
-    final timestamp = DateFormat('h:mma').format(time);
+    final timestamp = isStarred
+        ? DateFormat('dd/MM/yy').format(time)
+        : DateFormat('h:mma').format(time);
     var replyOfObj = (replyOf == null ? null : json.decode(replyOf!));
 
     bool fromMe = from == userController.user['mobile'];
@@ -56,7 +58,7 @@ class GroupMsgCardComponent extends StatelessWidget {
               side: BorderSide(
                   width: 2,
                   color: isStarred
-                      ? Color.fromARGB(255, 184, 223, 220)
+                      ? Color.fromARGB(255, 206, 167, 218)
                       : Colors.transparent),
               borderRadius: (fromMe
                   ? const BorderRadius.only(
@@ -85,7 +87,7 @@ class GroupMsgCardComponent extends StatelessWidget {
                       child: Text(
                         fromName!,
                         style: const TextStyle(
-                            color: const Color.fromARGB(255, 219, 70, 245)),
+                            color: Color.fromARGB(255, 227, 198, 255)),
                       ),
                     ),
                   if (document != null) ...{
@@ -170,14 +172,40 @@ class GroupMsgCardComponent extends StatelessWidget {
                               children: [
                                 const Icon(
                                   Icons.file_present_rounded,
-                                  color: AppColors.titleColorLight,
+                                  color: Color.fromARGB(255, 199, 199, 199),
                                 ),
                                 const SizedBox(width: 5),
-                                Text(
-                                  document!['document'].split('/')[
-                                      document!['document'].split('/').length -
-                                          1],
-                                  style: TextStyle(color: Colors.grey.shade900),
+                                Column(
+                                  children: [
+                                    if (document!['document']
+                                            .split('/')[document!['document']
+                                                    .split('/')
+                                                    .length -
+                                                1]
+                                            .length >
+                                        20)
+                                      Text(
+                                        document!['document']
+                                                .split('/')[
+                                                    document!['document']
+                                                            .split('/')
+                                                            .length -
+                                                        1]
+                                                .substring(0, 20) +
+                                            '...',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      )
+                                    else
+                                      Text(
+                                          document!['document'].split('/')[
+                                              document!['document']
+                                                      .split('/')
+                                                      .length -
+                                                  1],
+                                          style: const TextStyle(
+                                              color: Colors.white))
+                                  ],
                                 ),
                               ],
                             ),
@@ -186,9 +214,9 @@ class GroupMsgCardComponent extends StatelessWidget {
                                   BasicAppUtils().downloadFileFromUrl(
                                       '${dotenv.env['SERVER_MEDIA_URI']}${document!['document']}');
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.download,
-                                  color: Colors.grey.shade800,
+                                  color: Color.fromARGB(255, 199, 199, 199),
                                 ))
                           ],
                         ),

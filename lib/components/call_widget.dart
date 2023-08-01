@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sparrow/common/global_variables.dart';
+import 'package:sparrow/controllers/callsController.dart';
+import 'package:sparrow/services/call-service.dart';
 
 class CallWidget extends StatelessWidget {
+  final String id;
   final String avatar;
-  final String call;
+  final DateTime time;
   final String name;
   final String callStatus;
   const CallWidget(
       {Key? key,
       required this.avatar,
-      required this.call,
+      required this.time,
       required this.callStatus,
-      required this.name})
+      required this.name,
+      required this.id})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final callsController = Get.put(CallsController());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Container(
@@ -28,7 +36,8 @@ class CallWidget extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(avatar),
+                    backgroundImage: NetworkImage(
+                        '${dotenv.env['SERVER_MEDIA_URI']}$avatar'),
                     radius: 25,
                   ),
                   const SizedBox(
@@ -58,7 +67,7 @@ class CallWidget extends StatelessWidget {
                             const SizedBox(
                               width: 5,
                             ),
-                            Text(call, style: TextStyle(fontSize: 14))
+                            Text(callStatus, style: TextStyle(fontSize: 14))
                           ],
                         ),
                       )
@@ -68,14 +77,35 @@ class CallWidget extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(
-                    DateFormat('h:mma  ').format(DateTime.now()),
-                    style: const TextStyle(
-                        fontSize: 10, fontWeight: FontWeight.w500),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        DateFormat('dd/MM/yy').format(time),
+                        style: const TextStyle(
+                            fontSize: 10, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        DateFormat('h:mma').format(time),
+                        style: const TextStyle(
+                            fontSize: 10, fontWeight: FontWeight.w500),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     width: 10,
                   ),
+                  IconButton(
+                      onPressed: () {
+                        CallServices().removeCallLog(id);
+
+                        callsController.calls
+                            .removeWhere((log) => log['id'].toString() == id);
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: AppColors.appBarColor,
+                      ))
                 ],
               ),
             ],

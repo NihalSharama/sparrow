@@ -1,12 +1,12 @@
-import 'package:sparrow/main.dart';
+import 'package:flutter/material.dart';
 import 'package:sparrow/pages/archivedChats.dart';
+import 'package:sparrow/pages/auth.dart';
 import 'package:sparrow/pages/conversation/chatInfo.dart';
 import 'package:sparrow/pages/conversation/chatRoom.dart';
 import 'package:sparrow/pages/conversation/groupChatRoom.dart';
+import 'package:sparrow/pages/explore.dart';
 import 'package:sparrow/pages/landing.dart';
-import 'package:sparrow/pages/auth.dart';
-import 'package:flutter/material.dart';
-import 'package:sparrow/pages/rtc/receiveCall.dart';
+import 'package:sparrow/pages/reels.dart';
 import 'package:sparrow/pages/usersFromContact.dart';
 
 class ReceiveCallArgs {
@@ -46,6 +46,18 @@ Route<dynamic> genarateRoute(RouteSettings routeSettings) {
       return PageRouteBuilder(
         settings: routeSettings,
         pageBuilder: (_, __, ___) => const AuthScreen(),
+      );
+
+    case ExploreScreen.routeName:
+      return PageRouteBuilder(
+        settings: routeSettings,
+        pageBuilder: (_, __, ___) => const ExploreScreen(),
+      );
+
+    case ReelsScreen.routeName:
+      return PageRouteBuilder(
+        settings: routeSettings,
+        pageBuilder: (_, __, ___) => const ReelsScreen(),
       );
     case ArchivedChats.routeName:
       return PageRouteBuilder(

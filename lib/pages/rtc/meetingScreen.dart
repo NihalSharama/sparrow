@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
@@ -10,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sparrow/controllers/chatsController.dart';
 import 'package:sparrow/controllers/socketController.dart';
 import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/services/call-service.dart';
 import 'package:sparrow/services/firebase-notifications.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 import 'package:sparrow/utils/user-contacts.dart';
@@ -42,6 +44,7 @@ class _GroupMeetingScreenState extends State<GroupMeetingScreen> {
 
   late RtcEngine _engine;
   List _remoteUids = [];
+  int numberOfRang = 0;
 
   int generateRandomUid() {
     var random = Random();
@@ -107,7 +110,21 @@ class _GroupMeetingScreenState extends State<GroupMeetingScreen> {
         "name": chatsController.chatRoomDetails['group_name'],
         "avatar": chatsController.chatRoomDetails['group_profile']
       };
-      signallingWs.send(json.encode(data));
+
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (numberOfRang <= 5) {
+          signallingWs.send(json.encode(data));
+
+          numberOfRang += 1;
+        } else {
+          _remoteUids.clear();
+          _engine.leaveChannel();
+          Navigator.pop(context);
+          if (!widget.isCalling) {
+            Navigator.pop(context);
+          }
+        }
+      });
 
       try {
         for (var receiverMobile in chatsController.chatRoomDetails['users']) {
@@ -118,6 +135,9 @@ class _GroupMeetingScreenState extends State<GroupMeetingScreen> {
               'Ongoing Group Meeting...',
               {'id': chatsController.chatRoomDetails['id']});
         }
+
+        await CallServices().createCallLog(
+            chatsController.chatRoomDetails['id'].toString(), false);
       } catch (_) {}
     }
   }

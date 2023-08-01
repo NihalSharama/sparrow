@@ -46,7 +46,9 @@ class MsgCardComponent extends StatelessWidget {
     final userController = Get.put(UserController());
     final chatsController = Get.put(ChatsController());
     final socketController = Get.put(SocketController());
-    final timestamp = DateFormat('h:mma').format(time);
+    final timestamp = isStarred
+        ? DateFormat('dd/MM/yy').format(time)
+        : DateFormat('h:mma').format(time);
     var replyOfObj = (replyOf == null ? null : json.decode(replyOf!));
 
     bool fromMe = from == userController.user['mobile'];
@@ -83,7 +85,7 @@ class MsgCardComponent extends StatelessWidget {
                 side: BorderSide(
                     width: 2,
                     color: isStarred
-                        ? Color.fromARGB(255, 184, 223, 220)
+                        ? Color.fromARGB(255, 206, 167, 218)
                         : Colors.transparent),
                 borderRadius: (fromMe
                     ? const BorderRadius.only(
@@ -193,7 +195,7 @@ class MsgCardComponent extends StatelessWidget {
                                 children: [
                                   const Icon(
                                     Icons.file_present_rounded,
-                                    color: AppColors.titleColorLight,
+                                    color: Color.fromARGB(255, 199, 199, 199),
                                   ),
                                   const SizedBox(width: 5),
                                   Column(
@@ -214,8 +216,8 @@ class MsgCardComponent extends StatelessWidget {
                                                           1]
                                                   .substring(0, 20) +
                                               '...',
-                                          style: TextStyle(
-                                              color: Colors.grey.shade900),
+                                          style: const TextStyle(
+                                              color: Colors.white),
                                         )
                                       else
                                         Text(
@@ -224,8 +226,8 @@ class MsgCardComponent extends StatelessWidget {
                                                         .split('/')
                                                         .length -
                                                     1],
-                                            style: TextStyle(
-                                                color: Colors.grey.shade900))
+                                            style: const TextStyle(
+                                                color: Colors.white))
                                     ],
                                   ),
                                 ],

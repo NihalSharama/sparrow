@@ -126,7 +126,13 @@ class _MyAppState extends State<MyApp> {
 
     // Adding Event Handlers
     signallingWs.eventHandlers["rtc.offer"] = (data) async {
-      _navigationService.navigateTo(data, ReceiveCall.routeName);
+      print('callermobile: ${userController.currentCall.value} ');
+
+      if (data['caller_mobile'] != userController.currentCall.value) {
+        userController.currentCall.value = data['caller_mobile'];
+
+        _navigationService.navigateTo(data, ReceiveCall.routeName);
+      }
     };
 
     signallingWs.eventHandlers["group.meeting"] = (data) async {

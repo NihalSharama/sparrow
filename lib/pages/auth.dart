@@ -7,9 +7,6 @@ import 'package:sparrow/components/customITextField.dart';
 import 'package:sparrow/components/otp_field.dart';
 import 'package:sparrow/controllers/authController.dart';
 import 'package:sparrow/controllers/userController.dart';
-import 'package:sparrow/pages/conversation/chats.dart';
-import 'package:sparrow/pages/landing.dart';
-import 'package:sparrow/utils/cache-manager.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({

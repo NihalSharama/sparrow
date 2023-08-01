@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sparrow/common/global_variables.dart';
 import 'package:sparrow/controllers/chatsController.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
 import 'package:sparrow/controllers/socketController.dart';
 import 'package:sparrow/controllers/userController.dart';
+import 'package:sparrow/services/call-service.dart';
 import 'package:sparrow/services/firebase-notifications.dart';
 import 'package:sparrow/utils/webRtc/web_rtc.dart';
 import 'package:sparrow/utils/webRtc/websocket.dart';
@@ -30,11 +33,15 @@ class _CallScreenState extends State<CallScreen> {
   late WebRtc webrtc;
   bool loadedWebRtc = false;
   bool ringing = false;
+  int numberOfRang = 0;
   bool remoteSet = false;
+  bool isHangedUp = false;
   bool micEnabled = true;
   bool speakerEnabled = false;
   bool audioCall = false;
   bool isRemoteVideoEnabled = false;
+
+  late Timer _ringingTimer;
 
   void initCallWs(SimpleWebSocket ws) {
     // Adding Event Handlers
@@ -53,6 +60,12 @@ class _CallScreenState extends State<CallScreen> {
       // Rejecting Connection
       webrtc.localVideoRenderer.srcObject = null;
       webrtc.remoteVideoRenderer.srcObject = null;
+
+      // setState(() {
+      //   isHangedUp = true;
+      // });
+      _ringingTimer.cancel();
+
       await webrtc.destroy();
       _peerConnection.close();
       await _peerConnection.close();
@@ -119,17 +132,48 @@ class _CallScreenState extends State<CallScreen> {
       webrtc.remoteVideoRenderer.srcObject = null;
       setState(() {});
     };
+
     // Creates and Sends
-    await webrtc.createOffer(
+    Map<String, dynamic> offerData = await webrtc.createOffer(
         _peerConnection,
         audioCall,
         chatsController.chatRoomDetails.value['receiver_info']['mobile']
             .toString());
 
+    _ringingTimer = Timer.periodic(const Duration(milliseconds: 2000), (timer) {
+      if (remoteSet || isHangedUp) {
+        print(
+            {'remote': remoteSet.toString(), 'hanged': isHangedUp.toString()});
+        timer.cancel();
+      } else if (numberOfRang <= 8) {
+        webrtc.sendData(offerData);
+        numberOfRang += 2;
+      } else {
+        webrtc.hangUp(() {
+          Navigator.pop(context);
+          _peerConnection.close();
+        });
+        timer.cancel();
+      }
+    });
+
+    try {
+      FirebaseServices().sendPushNotification(
+          recvMobile,
+          'notification.call',
+          'Sparrow',
+          'Incomming ${audioCall ? 'Audio' : 'Video'} Call...',
+          {'audioCall': audioCall});
+    } catch (_) {}
+
     // Refreshes Page
     setState(() {
       loadedWebRtc = true;
     });
+
+    // creating call Log
+    await CallServices()
+        .createCallLog(chatsController.chatRoomDetails['id'].toString(), true);
   }
 
   @override
@@ -148,6 +192,7 @@ class _CallScreenState extends State<CallScreen> {
     @override
     deactivate() {
       super.deactivate();
+
       webrtc.destroy();
     }
   }
@@ -186,7 +231,7 @@ class _CallScreenState extends State<CallScreen> {
                                 fontSize: 24, color: AppColors.titleColor)),
                         const SizedBox(height: 6),
                         Text(
-                          remoteSet ? '00:00' : 'Calling...',
+                          remoteSet ? '' : 'Calling...',
                           style: const TextStyle(
                               fontSize: 18, color: AppColors.titleColorLight),
                         )
@@ -287,6 +332,9 @@ class _CallScreenState extends State<CallScreen> {
                       )),
                   IconButton(
                       onPressed: () {
+                        setState(() {
+                          isHangedUp = true;
+                        });
                         webrtc.hangUp(() {
                           Navigator.pop(context);
                           _peerConnection.close();

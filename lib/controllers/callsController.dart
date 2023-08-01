@@ -9,34 +9,26 @@ import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 import 'package:sparrow/utils/user-contacts.dart';
 
-var featchedCalls = [
-  {
-    "avatar": "assets/images/default2.jpg",
-    "name": "Aditya Paswan",
-    "call": "Incoming",
-    "callStatus": "Incoming",
-  },
-  {
-    "avatar": "assets/images/default2.jpg",
-    "name": "Nihal Sharma",
-    "call": "Outgoing",
-    "callStatus": "Incoming",
-  },
-  {
-    "avatar": "assets/images/default.jpg",
-    "name": "Anurag Sharma",
-    "call": "Missed",
-    "callStatus": "missed",
-  },
-];
-
 class CallsController extends GetxController {
   var calls = [].obs;
   var usersFromContact = [].obs;
   var userSearchResults = [].obs;
   var selectedGroupContacts = [].obs;
   getCalls() async {
-    calls.value = featchedCalls;
+    final fetchedCallLogs = await CallServices().fetchCallLogs();
+
+    for (Map log in fetchedCallLogs) {
+      String name = '';
+
+      if (log['conversation'] != null) {
+        name = await getUserNameFromMobile(log['conversation'].toString());
+      } else {
+        name = log['group'];
+      }
+      log.addEntries({'name': name}.entries);
+    }
+
+    calls.value = fetchedCallLogs;
   }
 
   Future getUsersFromContacts() async {

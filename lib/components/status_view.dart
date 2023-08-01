@@ -267,7 +267,7 @@ class _StatusViewState extends State<StatusView> {
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(16),
                                     topRight: Radius.circular(16)),
-                                color: AppColors.mainColor,
+                                color: AppColors.appBarColor,
                               ),
                               height: 60,
                               child: Padding(
