@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:sparrow/utils/cache-manager.dart';
 import 'package:sparrow/utils/error-handlers.dart';
 import 'package:sparrow/utils/request-methods.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserServices {
   updateProfile(Object newDetails) async {
@@ -84,7 +83,6 @@ class UserServices {
     }
 
     final mapRes = json.decode(response.body);
-    final isNoError = toasterHandler(mapRes);
 
     print(mapRes);
 

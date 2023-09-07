@@ -16,7 +16,7 @@ class AuthController extends GetxController {
   ];
   var enteredOtp = ''.obs;
   var showOtp = false.obs;
-  var otp = ''.obs;
+  
 
   onGetLoginOtp(formkey) async {
     if (formkey != null) {
@@ -27,7 +27,7 @@ class AuthController extends GetxController {
     }
 
     final isNoError =
-        await AuthServices().featchLoginOtp(phoneController.text, otp);
+        await AuthServices().featchLoginOtp(phoneController.text );
     showOtp.value = isNoError;
   }
 
@@ -40,7 +40,7 @@ class AuthController extends GetxController {
     }
 
     final isNoError = await AuthServices().featchSignUpOtp(phoneController.text,
-        firstNameController.text, lastNameController.text, otp);
+        firstNameController.text, lastNameController.text);
     showOtp.value = isNoError;
   }
 

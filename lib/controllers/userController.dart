@@ -1,17 +1,13 @@
 import 'dart:io' as io;
 
-import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sparrow/pages/auth.dart';
-import 'package:sparrow/pages/landing.dart';
-import 'package:sparrow/pages/settings/settingPage.dart';
-import 'package:sparrow/services/firebase-notifications.dart';
-import 'package:sparrow/services/user-services.dart';
-import 'package:sparrow/utils/cache-manager.dart';
-import 'package:sparrow/utils/error-handlers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sparrow/pages/auth.dart';
+import 'package:sparrow/services/firebase-notifications.dart';
+import 'package:sparrow/services/user-services.dart';
+import 'package:sparrow/utils/cache-manager.dart';
 
 class UserController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -31,7 +27,6 @@ class UserController extends GetxController {
     TextEditingController(),
   ];
   var showOtp = false.obs;
-  var otp = ''.obs;
   var bgImage = ''.obs;
   var currentCall = ''.obs;
 
@@ -137,7 +132,7 @@ class UserController extends GetxController {
     }
 
     final res = await UserServices().featchOtp(data);
-    otp.value = res['data']['otp'].toString();
+   
     showOtp.value = res['success'];
   }
 

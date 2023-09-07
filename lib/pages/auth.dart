@@ -144,8 +144,8 @@ class _AuthScreenState extends State<AuthScreen> {
                         )
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text('OTP Is: ${authController.otp.value}'),
+                    // const SizedBox(height: 10),
+                    // Text('OTP Is: ${authController.otp.value}'),
                     // ignore: equal_elements_in_set
                     const SizedBox(height: 40),
                   } else ...{

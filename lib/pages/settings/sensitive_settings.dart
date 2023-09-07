@@ -140,8 +140,8 @@ class _SensitiveSettingsState extends State<SensitiveSettings> {
                         )
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text('OTP Is: ${userController.otp.value}'),
+                    // const SizedBox(height: 10),
+                    // Text('OTP Is: ${userController.otp.value}'),
                     // ignore: equal_elements_in_set
                     const SizedBox(height: 40),
                   } else ...{

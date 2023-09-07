@@ -6,7 +6,7 @@ import 'package:sparrow/utils/request-methods.dart';
 import 'package:http/http.dart';
 
 class AuthServices {
-  featchLoginOtp(String mobile, otp) async {
+  featchLoginOtp(String mobile) async {
     final response = await RequestMethods.postMethod(
         '/auth/send_otp/', {'mobile': mobile}, false);
 
@@ -19,12 +19,12 @@ class AuthServices {
     final isNoError = toasterHandler(mapRes);
 
     print(mapRes);
-    otp.value = mapRes['data']['otp'].toString();
+   
 
     return isNoError;
   }
 
-  featchSignUpOtp(String mobile, String firstName, String lastName, otp) async {
+  featchSignUpOtp(String mobile, String firstName, String lastName) async {
     final response = await RequestMethods.postMethod(
         '/auth/send_otp/',
         {'mobile': mobile, 'first_name': firstName, 'last_name': lastName},
@@ -39,7 +39,6 @@ class AuthServices {
     final isNoError = toasterHandler(mapRes);
 
     print(mapRes);
-    otp.value = mapRes['data']['otp'].toString();
 
     return isNoError;
   }
